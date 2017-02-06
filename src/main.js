@@ -4,23 +4,26 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
-import Home from './components/HelloFromVux'
+import Home from './components/Home'
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
 
+Vue.use(MintUI)
 Vue.use(VueRouter)
 
 const routes = [{
-  path: '/',
-  component: Home
+	path: '/',
+	component: Home
 }]
 
 const router = new VueRouter({
-  routes
+	routes
 })
 
 FastClick.attach(document.body)
 
 /* eslint-disable no-new */
 new Vue({
-  router,
-  render: h => h(App)
+	router,
+	render: h => h(App)
 }).$mount('#app')
