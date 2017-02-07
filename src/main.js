@@ -4,7 +4,7 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
-import Home from './components/Home'
+import Home from './components/home/Home'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 

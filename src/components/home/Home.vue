@@ -4,13 +4,13 @@
     <div class="container">
       <mt-tab-container v-model="selected">
         <mt-tab-container-item id="主页">
-          <Main></Main>
+          <main-page></main-page>
         </mt-tab-container-item>
         <mt-tab-container-item id="消息">
-          <Message></Message>
+          <message></message>
         </mt-tab-container-item>
         <mt-tab-container-item id="设置">
-          <Setting></Setting>
+          <setting></setting>
         </mt-tab-container-item>
       </mt-tab-container>
     </div>
@@ -34,7 +34,7 @@
 <script>
 import Vue from 'vue'
 import {Tabbar, TabItem, TabContainer, TabContainerItem, Header} from 'mint-ui';
-import Main from './Main'
+import MainPage from './MainPage'
 import Message from './Message'
 import Setting from './Setting'
 
@@ -46,6 +46,9 @@ Vue.component(TabContainerItem.name, TabContainerItem);
 
 export default {
   components: {
+    MainPage,
+    Message,
+    Setting
   },
   data () {
     return {

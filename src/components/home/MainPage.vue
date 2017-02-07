@@ -50,6 +50,12 @@
         </div>
 	</div>
 </template>
+<script type="text/javascript">
+	export default{
+		components:{
+		}
+	}
+</script>
 <style type="text/css" scoped>
   .grid-item{
     display: inline-block;

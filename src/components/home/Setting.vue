@@ -12,16 +12,28 @@
       <mt-cell title="版本更新">
         <img class="setting-cell" slot="icon" src="../../assets/update.png" width="30" height="30">
       </mt-cell>
-      <mt-button class="logout-btn" type="danger">退出登录</mt-button>
+      <mt-button class="logout-btn" type="danger" @click.native="logout">退出登录</mt-button>
 	</div>
 </template>
 
 <script type="text/javascript">
 	import Vue from 'vue'
-	import {Cell, Button} from 'mint-ui';
+	import {Cell, Button, MessageBox} from 'mint-ui';
 
 	Vue.component(Cell.name, Cell);
 	Vue.component(Button.name, Button);
+
+	export default{
+		methods:{
+			logout: function () {
+				MessageBox({
+				  title: '退出登录',
+				  message: '确定退回登录界面?',
+				  showCancelButton: true
+				});
+			}
+		}
+	}
 </script>
 
 <style type="text/css" scoped>
