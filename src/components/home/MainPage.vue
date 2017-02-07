@@ -1,58 +1,49 @@
 <template>
 	<div>
-		<div class="grid-row">
-	        <div class="grid-item">
-	          <img class="grid-icon" src="../../assets/search.png">
-	          <div class="grid-content">
-	            客户查询
-	          </div>
-	        </div>
-	        <div class="grid-item">
-	          <img class="grid-icon" src="../../assets/customer.png">
-	          <div class="grid-content">
-	            我的客户
-	          </div>
-	        </div>
-	        <div class="grid-item">
-	          <img class="grid-icon" src="../../assets/opportunity.png">
-	          <div class="grid-content">
-	            我的商机
-	          </div>
-	        </div>
-      	</div>
-		<div class="grid-row">
-			<div class="grid-item">
-			  <img class="grid-icon" src="../../assets/activity.png">
-			  <div class="grid-content">
-			    我的活动
-			  </div>
-			</div>
-			<div class="grid-item">
-			  <img class="grid-icon" src="../../assets/worktime.png">
-			  <div class="grid-content">
-			    我的工时
-			  </div>
-			</div>
-			<div class="grid-item">
-			  <img class="grid-icon" src="../../assets/schedule.png">
-			  <div class="grid-content">
-			    我的日程
-			  </div>
+		<div class="grid-row" v-for="items in uiItems">
+			<div class="grid-item" v-for="item in items">
+				<img class="grid-icon" :src="require('../../assets/' + item.icon)">
+				<div class="grid-content">
+	              {{item.name}}
+	            </div>
 			</div>
 		</div>
-        <div class="grid-row">
-          <div class="grid-item">
-            <img class="grid-icon" src="../../assets/salesopportunity.png">
-            <div class="grid-content">
-              交叉销售
-            </div>
-          </div>
-        </div>
 	</div>
 </template>
 <script type="text/javascript">
 	export default{
 		components:{
+			
+		},
+		created () {
+		    var temp = [];
+			for (var i = 0,j = this.items.length,k = 1; i < j; i++){
+				temp.push(this.items[i]);
+				k++;
+				if (k > 3){
+					this.uiItems.push(temp);
+					temp = [];
+					k = 1;
+				}
+
+				if (i + 1 == j){
+					this.uiItems.push(temp);
+				}
+			}
+		},
+		data(){
+			return{
+				items:[
+					{name:'客户查询',icon:'search.png'},
+					{name:'我的客户',icon:'customer.png'},
+					{name:'我的商机',icon:'opportunity.png'},
+					{name:'我的活动',icon:'activity.png'},
+					{name:'我的工时',icon:'worktime.png'},
+					{name:'我的日程',icon:'schedule.png'},
+					{name:'交叉销售',icon:'salesopportunity.png'}
+				],
+				uiItems:[]
+			}
 		}
 	}
 </script>
