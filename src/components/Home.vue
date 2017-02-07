@@ -81,6 +81,9 @@
           <mt-cell is-link title="意见反馈">
             <img class="setting-cell" slot="icon" src="../assets/feedback.png" width="30" height="30">
           </mt-cell>
+          <mt-cell title="版本更新">
+            <img class="setting-cell" slot="icon" src="../assets/update.png" width="30" height="30">
+          </mt-cell>
         </mt-tab-container-item>
       </mt-tab-container>
     </div>
@@ -123,7 +126,7 @@ export default {
   }
 }
 </script>
-<style type="text/css">
+<style type="text/css" scoped>
   .container{
     overflow: auto;
     position: absolute;
