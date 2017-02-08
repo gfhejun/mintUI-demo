@@ -1,19 +1,13 @@
 <template>
-	<div class="grid-row">
-	    <div class="grid-item">
-	      <mt-badge size="small" type="error" class="badge">30</mt-badge>
-	      <img class="grid-icon" src="../../assets/todo.png">
-	      <div class="grid-content">
-	        我的待办
-	      </div>
-	    </div>
-	    <div class="grid-item">
-	      <img class="grid-icon" src="../../assets/notification.png">
-	      <mt-badge size="small" type="error" class="badge">20</mt-badge>
-	      <div class="grid-content">
-	        消息通知
-	      </div>
-	    </div>
+	<div>
+		<mt-cell is-link title="我的待办">
+	      <img class="setting-cell" slot="icon" src="../../assets/todo.png" width="30" height="30">
+	      <mt-badge size="normal" type="error" class="badge">30</mt-badge>
+	    </mt-cell>
+	    <mt-cell is-link title="消息通知">
+	      <img class="setting-cell" slot="icon" src="../../assets/notification.png" width="30" height="30">
+	      <mt-badge size="normal" type="error" class="badge">10</mt-badge>
+	    </mt-cell>
 	</div>
 </template>
 
@@ -25,27 +19,7 @@
 </script>
 
 <style type="text/css" scoped>
-	.grid-item{
-	    display: inline-block;
-	    width: 33%;
-	    padding: 10px 0 5px 0;
-	    border-bottom: 1px solid #ddd;
-	    border-right: 1px solid #ddd;
-	    text-align: center;
-	    float: left;
+	.setting-cell{
+    	margin: 0 10px 0 20px;
   	}
-
-	.grid-icon{
-		width: 35px;
-		height: 35px;
-	}
-
-	.grid-content{
-		font-size: 15px;
-	}
-
-	.badge{
-		float: right;
-		margin-right: 5px;
-	}
 </style>
