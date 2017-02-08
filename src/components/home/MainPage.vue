@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="grid-row" v-for="items in uiItems">
+		<div v-for="items in uiItems">
 			<div class="grid-item" v-for="item in items">
 				<img class="grid-icon" :src="require('../../assets/' + item.icon)">
 				<div class="grid-content">
@@ -40,7 +40,8 @@
 					{name:'我的活动',icon:'activity.png'},
 					{name:'我的工时',icon:'worktime.png'},
 					{name:'我的日程',icon:'schedule.png'},
-					{name:'交叉销售',icon:'salesopportunity.png'}
+					{name:'交叉销售',icon:'salesopportunity.png'},
+					{name:'业务与产品',icon:'product.png'}
 				],
 				uiItems:[]
 			}
