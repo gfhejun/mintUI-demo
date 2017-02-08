@@ -63,7 +63,7 @@
 				this.loading = true;
 				this.disableLoadingMore = true;
 				this.result = [];
-				this.page = 2;
+				this.nextPage = 2;
 				
 				var httpConfig = {
 					params: {
@@ -116,7 +116,7 @@
     					dataSource: 'siebel',
     					searchKey: this.searchkey,
     					postnId: "1-5A-4576",
-    					page: this.page
+    					page: this.nextPage
   					}
 				}
 
@@ -125,7 +125,7 @@
 				.then((response) =>{
 					this.loading = false;
 					if (response.status == 200){
-						this.page++;
+						this.nextPage++;
 						this.result = this.result.concat(response.data.data.items);
 						if (this.result.length >= response.data.data.total){
 							//已无更多数据时显示提示，并且禁止上拉加载更多
@@ -146,7 +146,7 @@
 				searchkey: '', //搜索关键字
 				loading: false, //是否正在加载数据
 				disableLoadingMore: true, //禁止加载更多
-				page: 2, //下一页页码
+				nextPage: 2, //下一页页码
 				init: true //是否初始化
 			}
 		}
