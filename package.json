@@ -9,6 +9,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "fastclick": "^1.0.6",
     "mint-ui": "^2.1.1",
     "vue": "^2.1.0",

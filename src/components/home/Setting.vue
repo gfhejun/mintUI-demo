@@ -1,7 +1,7 @@
 <template>
 	<div>
 	    <mt-cell is-link title="个人信息">
-        <img class="setting-cell" slot="icon" src="../../assets/user.png" width="30" height="30">
+        <img class="setting-cell" slot="icon" src="../../assets/userinfo.png" width="30" height="30">
       </mt-cell>
       <mt-cell is-link title="切换职位">
         <img class="setting-cell" slot="icon" src="../../assets/post.png" width="30" height="30">

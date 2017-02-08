@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div v-for="items in uiItems">
-			<div class="grid-item" v-for="item in items">
+			<div class="grid-item" v-for="item in items" @click="goto(item.link)">
 				<img class="grid-icon" :src="require('../../assets/' + item.icon)">
 				<div class="grid-content">
 	              {{item.name}}
@@ -14,6 +14,11 @@
 	export default{
 		components:{
 			
+		},
+		methods:{
+			goto: function (link) {
+				this.$router.push('/' + link); 
+			}
 		},
 		created () {
 		    var temp = [];
@@ -34,14 +39,14 @@
 		data(){
 			return{
 				items:[
-					{name:'客户查询',icon:'search.png'},
-					{name:'我的客户',icon:'customer.png'},
-					{name:'我的商机',icon:'opportunity.png'},
-					{name:'我的活动',icon:'activity.png'},
-					{name:'我的工时',icon:'worktime.png'},
-					{name:'我的日程',icon:'schedule.png'},
-					{name:'交叉销售',icon:'salesopportunity.png'},
-					{name:'业务与产品',icon:'product.png'}
+					{name:'客户查询',icon:'search.png',link:'customersearch'},
+					{name:'我的客户',icon:'customer.png',link:'customersearch'},
+					{name:'我的商机',icon:'opportunity.png',link:'customersearch'},
+					{name:'我的活动',icon:'activity.png',link:'customersearch'},
+					{name:'我的工时',icon:'worktime.png',link:'customersearch'},
+					{name:'我的日程',icon:'schedule.png',link:'customersearch'},
+					{name:'交叉销售',icon:'salesopportunity.png',link:'customersearch'},
+					{name:'业务与产品',icon:'product.png',link:'customersearch'}
 				],
 				uiItems:[]
 			}
