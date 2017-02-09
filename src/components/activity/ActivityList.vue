@@ -5,6 +5,14 @@
     			<mt-button icon="back"></mt-button>
   			</router-link>
 		</mt-header>
+		<div class="tab">
+			<button-tab>
+		      <button-tab-item @on-item-click="changeTab('全部')" selected>全部</button-tab-item>
+		      <button-tab-item @on-item-click="changeTab('进行中')">进行中</button-tab-item>
+		      <button-tab-item @on-item-click="changeTab('已完成')">已完成</button-tab-item>
+		      <button-tab-item @on-item-click="changeTab('已取消')">已取消</button-tab-item>
+		    </button-tab>
+		</div>
 		<div class="list-content" 
 			v-infinite-scroll="loadMore"
 			infinite-scroll-disabled="disableLoadingMore"
@@ -41,7 +49,8 @@
 </template>
 <script type="text/javascript">
 	import Vue from 'vue'
-	import {Header, MessageBox, Spinner, InfiniteScroll} from 'mint-ui'
+	import { Header, MessageBox, Spinner, InfiniteScroll } from 'mint-ui'
+	import { ButtonTab, ButtonTabItem } from 'vux'
 	import axios from 'axios'
 	import config from '../../util/config'
 
@@ -51,49 +60,14 @@
 	Vue.component(Spinner.name, Spinner);
 
 	export default{
-		methods:{
-			//加载更多
-			loadMore: function () {
-				if (this.loading){
-					return;
-				}
-
-				this.loading = true;
-
-				var httpConfig = {
-					params: {
-    					actionStatus: '全部',
-    					empId: "1-5B-4873",
-    					orderText: 1,
-    					userOrgId: '1-59-1127',
-    					userPositionId: '1-5A-4576',
-    					page: this.nextPage,
-    					orderBy: 'created'
-  					}
-				}
-
-				var url = config.config.url.host + config.config.url.activityList;
-				axios.get(url, httpConfig)
-				.then((response) =>{
-					this.loading = false;
-					if (response.status == 200){
-						this.nextPage++;
-						this.result = this.result.concat(response.data.rows);
-						if (this.result.length >= response.data.total){
-							//已无更多数据时显示提示，并且禁止上拉加载更多
-							this.disableLoadingMore = true;
-						}else{
-							this.disableLoadingMore = false;
-						}
-					}
-				}, (response) => {
-					this.loading = false;
-					console.log('出现问题:' + response);
-				})
-			}
+		components:{
+			ButtonTab,
+			ButtonTabItem
 		},
-		created(){
-			if (this.loading){
+		methods:{
+			//加载数据
+			loadData: function () {
+				if (this.loading){
 					return;
 				}
 				this.init = true;
@@ -104,7 +78,7 @@
 				
 				var httpConfig = {
 					params: {
-    					actionStatus: '全部',
+    					actionStatus: this.actionStatus,
     					empId: "1-5B-4873",
     					orderText: 1,
     					userOrgId: '1-59-1127',
@@ -132,10 +106,62 @@
 				}, (response) => {
 					this.loading = false;
 					console.log('出现问题:' + response);
+				}) 
+			},
+
+			//加载更多
+			loadMore: function () {
+				if (this.loading){
+					return;
+				}
+
+				this.loading = true;
+
+				var httpConfig = {
+					params: {
+    					actionStatus: this.actionStatus,
+    					empId: "1-5B-4873",
+    					orderText: 1,
+    					userOrgId: '1-59-1127',
+    					userPositionId: '1-5A-4576',
+    					page: this.nextPage,
+    					orderBy: 'created'
+  					}
+				}
+
+				var url = config.config.url.host + config.config.url.activityList;
+				axios.get(url, httpConfig)
+				.then((response) =>{
+					this.loading = false;
+					if (response.status == 200){
+						this.nextPage++;
+						this.result = this.result.concat(response.data.rows);
+						if (this.result.length >= response.data.total){
+							//已无更多数据时显示提示，并且禁止上拉加载更多
+							this.disableLoadingMore = true;
+						}else{
+							this.disableLoadingMore = false;
+						}
+					}
+				}, (response) => {
+					this.loading = false;
+					console.log('出现问题:' + response);
 				})
+			},
+			changeTab: function (tab) {
+				if (this.actionStatus == tab){
+					return;
+				}
+				this.actionStatus = tab;
+				this.loadData();
+			}
+		},
+		created(){
+			this.loadData();
 		},
 		data(){
 			return{
+				actionStatus: '全部', //当前页
 				result: [], //数据列表
 				loading: false, //是否正在加载数据
 				disableLoadingMore: true, //禁止加载更多
@@ -146,9 +172,13 @@
 	}
 </script>
 <style type="text/css" scoped>
+	.tab{
+		margin-top: 50px;
+	}
+
 	.list-content{
 		position: absolute;
-		top: 40px;
+		top: 95px;
 		bottom: 5px;
 		left: 0;
 		right: 0;
