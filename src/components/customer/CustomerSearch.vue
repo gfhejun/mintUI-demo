@@ -30,9 +30,9 @@
 				</div>
 			</div>
 			<div class="load-more" v-if="!init">
-				<div v-if="!loading && disableLoadingMore">已无更多数据</div>
+				<div v-if="!loading && disableLoadingMore">已无更多客户</div>
 				<div v-if="!disableLoadingMore">
-					加载更多数据
+					加载更多客户
 					<mt-spinner style="display:inline-block" type="triple-bounce" color="#26a2ff" :size="30"></mt-spinner>
 				</div>
 			</div>
