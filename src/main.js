@@ -10,6 +10,7 @@ import 'mint-ui/lib/style.css'
 import Home from './components/home/Home'
 import CustomerSearch from './components/customer/CustomerSearch'
 import ActivityList from './components/activity/ActivityList'
+import ContactList from './components/contact/ContactList'
 
 Vue.use(MintUI)
 Vue.use(VueRouter)
@@ -26,6 +27,10 @@ const routes = [{
 	path: '/activitylist',
 	component: ActivityList,
 	name: 'activitylist'
+}, {
+	path: '/contactlist',
+	component: ContactList,
+	name: 'contactlist'
 }, {
 	path: '*',
 	redirect: Home

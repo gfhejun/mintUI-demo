@@ -4,6 +4,12 @@
 			<router-link to="/" slot="left">
     			<mt-button icon="back"></mt-button>
   			</router-link>
+  			<span slot="right">
+				<mt-button icon="search" @click="search"></mt-button>
+				<mt-button class="add" @click="add">
+					<img src="../../assets/add.png">
+				</mt-button>
+  			</span>
 		</mt-header>
 		<div class="tab">
 			<button-tab>
@@ -154,6 +160,12 @@
 				}
 				this.actionStatus = tab;
 				this.loadData();
+			},
+			add: function () {
+				console.log('add!'); 
+			},
+			search: function () {
+				console.log('search!');
 			}
 		},
 		created(){
@@ -174,11 +186,42 @@
 <style type="text/css" scoped>
 	.tab{
 		margin-top: 50px;
+		padding: 0 5px;
+	}
+
+	.tab div a{
+		font-size: 10px;
+		line-height: 25px;
+		height: 25px;
+	}
+
+	.tab div a:first-child{
+		border-top-left-radius: 8px;
+		border-bottom-left-radius: 8px;
+	}
+
+	.tab div a:last-child{
+		border-top-right-radius: 8px;
+		border-bottom-right-radius: 8px;
+	}
+
+	.vux-button-group > a.vux-button-group-current{
+		border-color: #26a2ff;
+		background-color: #26a2ff;
+	}
+
+	.add{
+		vertical-align: middle;
+	}
+
+	.add img{
+		width: 30px;
+		height: 30px;
 	}
 
 	.list-content{
 		position: absolute;
-		top: 95px;
+		top: 90px;
 		bottom: 5px;
 		left: 0;
 		right: 0;

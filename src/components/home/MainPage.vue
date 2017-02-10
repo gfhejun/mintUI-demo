@@ -40,7 +40,7 @@
 			return{
 				items:[
 					{name:'客户查询',icon:'search.png',link:'customersearch'},
-					{name:'我的客户',icon:'customer.png',link:'customersearch'},
+					{name:'我的客户',icon:'customer.png',link:'contactlist'},
 					{name:'我的商机',icon:'opportunity.png',link:'customersearch'},
 					{name:'我的活动',icon:'activity.png',link:'activitylist'},
 					{name:'我的工时',icon:'worktime.png',link:'customersearch'},
