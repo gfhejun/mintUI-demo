@@ -11,6 +11,7 @@ import Home from './components/home/Home'
 import CustomerSearch from './components/customer/CustomerSearch'
 import ActivityList from './components/activity/ActivityList'
 import ContactList from './components/contact/ContactList'
+import store from './vuex/store'
 
 Vue.use(MintUI)
 Vue.use(VueRouter)
@@ -53,5 +54,6 @@ Vue.filter("longText", function(text) {
 /* eslint-disable no-new */
 new Vue({
 	router,
+	store,
 	render: h => h(App)
 }).$mount('#app')

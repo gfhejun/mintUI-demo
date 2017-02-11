@@ -93,7 +93,7 @@
 					params: {
     					dataSource: this.dataSource,
     					searchKey: this.searchkey,
-    					postnId: "1-5A-4576"
+    					postnId: this.user.postId
   					}
 				}
 
@@ -191,7 +191,8 @@
 				disableLoadingMore: true, //禁止加载更多
 				nextPage: 2, //下一页页码
 				init: true, //是否初始化
-				count: '0' //从启信宝返回数据
+				count: '0', //从启信宝返回数据
+				user: this.$store.getters.getUserInfo
 			}
 		}
 	}

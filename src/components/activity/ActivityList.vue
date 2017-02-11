@@ -85,10 +85,10 @@
 				var httpConfig = {
 					params: {
     					actionStatus: this.actionStatus,
-    					empId: "1-5B-4873",
+    					empId: this.user.id,
     					orderText: 1,
-    					userOrgId: '1-59-1127',
-    					userPositionId: '1-5A-4576',
+    					userOrgId: this.user.orgId,
+    					userPositionId: this.user.postId,
     					page: 1,
     					orderBy: 'created'
   					}
@@ -126,10 +126,10 @@
 				var httpConfig = {
 					params: {
     					actionStatus: this.actionStatus,
-    					empId: "1-5B-4873",
+    					empId: this.user.id,
     					orderText: 1,
-    					userOrgId: '1-59-1127',
-    					userPositionId: '1-5A-4576',
+    					userOrgId: this.user.orgId,
+    					userPositionId: this.user.postId,
     					page: this.nextPage,
     					orderBy: 'created'
   					}
@@ -178,7 +178,8 @@
 				loading: false, //是否正在加载数据
 				disableLoadingMore: true, //禁止加载更多
 				nextPage: 2, //下一页页码
-				init: true //是否初始化
+				init: true, //是否初始化
+				user: this.$store.getters.getUserInfo
 			}
 		}
 	}
