@@ -10,6 +10,7 @@ import 'mint-ui/lib/style.css'
 import Home from './components/home/Home'
 import CustomerSearch from './components/customer/CustomerSearch'
 import ActivityList from './components/activity/ActivityList'
+import OpportunityList from './components/opportunity/OpportunityList'
 import ContactList from './components/contact/ContactList'
 import store from './vuex/store'
 
@@ -32,6 +33,10 @@ const routes = [{
 	path: '/contactlist',
 	component: ContactList,
 	name: 'contactlist'
+}, {
+	path: '/opportunitylist',
+	component: OpportunityList,
+	name: 'opportunitylist'
 }, {
 	path: '*',
 	redirect: Home
