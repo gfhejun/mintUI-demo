@@ -7,7 +7,15 @@
 		</mt-header>
 		<div class="searchbar">
 			<input type="text" placeholder="请输入客户名称" v-model="searchkey">
-			<mt-button class="searchbtn" type="primary" size="small" @click.native="search">搜索</mt-button>
+			<mt-button class="searchbtn" type="primary" size="small" @click.native="search(true)">查询</mt-button>
+		</div>
+		<div class="tab">
+			<button-tab>
+		      <button-tab-item @on-item-click="changeTab('siebel')" selected>系统内用户</button-tab-item>
+		      <button-tab-item @on-item-click="changeTab('qxb')">工商信息查询结果
+				<mt-badge v-if="count != '0'" size="small" type="error" class="badge">{{count}}</mt-badge>
+		      </button-tab-item>
+		    </button-tab>
 		</div>
 		<div class="list-content" 
 			v-infinite-scroll="loadMore"
@@ -41,9 +49,10 @@
 </template>
 <script type="text/javascript">
 	import Vue from 'vue'
-	import {Header, Search, Button, MessageBox, Spinner, InfiniteScroll} from 'mint-ui'
+	import {Header, Search, Button, MessageBox, Spinner, InfiniteScroll, Badge, TabContainer, TabContainerItem } from 'mint-ui'
 	import axios from 'axios'
 	import config from '../../util/config'
+	import { ButtonTab, ButtonTabItem } from 'vux'
 
 	Vue.use(InfiniteScroll);
 
@@ -51,12 +60,27 @@
 	Vue.component(Search.name, Search);
 	Vue.component(Button.name, Button);
 	Vue.component(Spinner.name, Spinner);
+	Vue.component(TabContainer.name, TabContainer);
+	Vue.component(TabContainerItem.name, TabContainerItem);
 
 	export default{
+		components:{
+			ButtonTab,
+			ButtonTabItem
+		},
 		methods:{
+			changeTab: function (dataSource) {
+				if (this.dataSource != dataSource){
+					this.dataSource = dataSource;
+					if (this.searchkey != ''){
+						this.search(false);
+					}
+				}
+			},
+
 			//搜索客户
-			search: function () {
-				if (this.loading){
+			search: function (searchKeyChange) {
+				if (this.loading || this.searchkey == ''){
 					return;
 				}
 				this.init = true;
@@ -67,12 +91,30 @@
 				
 				var httpConfig = {
 					params: {
-    					dataSource: 'siebel',
+    					dataSource: this.dataSource,
     					searchKey: this.searchkey,
     					postnId: "1-5A-4576"
   					}
 				}
 
+				if (searchKeyChange){
+					//从启信宝获取查询结果数量
+					var countUrl = config.config.url.host + config.config.url.qxb;
+					axios.get(countUrl, {params:{searchKey: this.searchkey}})
+					.then((response) =>{
+						if (response.status == 200){
+							if (response.data.total > 10){
+								this.count = '10+';
+							}else{
+								this.count = '' + response.data.total;
+							}
+						}
+					}, (response) => {
+						this.loading = false;
+						console.log('出现问题:' + response);
+					})
+				}
+				
 				var url = config.config.url.host + config.config.url.customerSearch;
 				axios.get(url, httpConfig)
 				.then((response) =>{
@@ -144,10 +186,12 @@
 			return{
 				result: [], //数据列表
 				searchkey: '', //搜索关键字
+				dataSource: 'siebel', //来源是siebel还是启信宝
 				loading: false, //是否正在加载数据
 				disableLoadingMore: true, //禁止加载更多
 				nextPage: 2, //下一页页码
-				init: true //是否初始化
+				init: true, //是否初始化
+				count: '0' //从启信宝返回数据
 			}
 		}
 	}
@@ -173,9 +217,40 @@
 		padding-top: 100px;
 	}
 
+	.tab{
+		margin-top: 10px;
+		padding: 0 5px;
+	}
+
+	.tab div a{
+		font-size: 10px;
+		line-height: 25px;
+		height: 25px;
+	}
+
+	.tab div a:first-child{
+		border-top-left-radius: 8px;
+		border-bottom-left-radius: 8px;
+	}
+
+	.tab div a:last-child{
+		border-top-right-radius: 8px;
+		border-bottom-right-radius: 8px;
+	}
+
+	.vux-button-group > a.vux-button-group-current{
+		border-color: #26a2ff;
+		background-color: #26a2ff;
+	}
+
+	.mint-badge.is-size-small{
+		line-height: 15px;
+		padding: 2px 5px;
+	}
+
 	.list-content{
 		position: absolute;
-		top: 90px;
+		top: 130px;
 		bottom: 5px;
 		left: 0;
 		right: 0;
