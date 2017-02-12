@@ -253,10 +253,11 @@
 	}
 
 	.searchArea span{
-		border: 1px solid #00a0e2;
-   		color: #00a0e2;
-   		border-radius: 3px;
-   		padding: 0 3px;
+		border: 1px solid white;
+   		color: white;
+   		background-color: #999;
+   		border-radius: 6px;
+   		padding: 2px 3px;
    		display: inline-block;
 		font-size: 12px;
 	}
