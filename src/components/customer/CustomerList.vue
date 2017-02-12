@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<mt-header fixed title="商机管理">
+		<mt-header fixed title="客户管理">
 			<router-link to="/" slot="left">
     			<mt-button icon="back"></mt-button>
   			</router-link>
@@ -23,22 +23,22 @@
   				</mt-header>
   				<div>
   					<mt-radio
-					  title="商机类型"
-					  v-model="opportunityType"
-					  :options="opportunityTypeOptions">
+					  title="客户类型"
+					  v-model="customerType"
+					  :options="customerTypeOptions">
 					</mt-radio>
 					<mt-radio
-					  title="商机归属"
+					  title="客户归属"
 					  v-model="belongTo"
 					  :options="belongToOptions">
 					</mt-radio>
-					<mt-field placeholder="根据商机名称搜索（支持模糊匹配）" v-model="searchKey" style="margin-top:30px"></mt-field>
+					<mt-field placeholder="根据客户名称搜索（支持模糊匹配）" v-model="searchKey" style="margin-top:30px"></mt-field>
   				</div>
   			</div>
 		</mt-popup>
 		<div class="searchArea">
 			<div class="title">筛选:</div>
-			<span>{{opportunityType}}</span>
+			<span>{{customerType}}</span>
 			<span>{{belongTo}}</span>
 			<span v-if="searchKey">{{searchKey | longText(8)}}</span>
 		</div>
@@ -53,12 +53,13 @@
 				<div>
 					<span class="name">{{item.name}}</span>
 				</div>
-				<div class="type">
-					<span>{{item.gfrequiredtype | longText(18)}}</span>
+				<div class="owner">
+					<img src="../../assets/user.png">
+				    <span>{{item.owner_name}}</span>
 				</div>
-				<div style="margin: 5px 0 5px 0">
-					<span class="status">{{item.status}}</span>
-					<span class="stage">{{item.salesstage}}</span>
+				<div class="address">
+					<img src="../../assets/location.png">
+				    <span>{{item.office_addr | longText(15) }}</span>
 				</div>
 			</div>
 			<div class="load-more" v-if="!init">
@@ -103,9 +104,16 @@
 				this.result = [];
 				this.nextPage = 2;
 				
+				var customerType = '';
+				if (this.customerType == '有效客户'){
+					customerType = 'active';
+				}else{
+					customerType = 'potential';
+				}
+
 				var httpConfig = {
 					params: {
-    					optyStatus: this.opportunityType,
+    					type: customerType,
     					empId: this.user.id,
     					orderText: 1,
     					userOrgId: this.user.orgId,
@@ -115,7 +123,7 @@
   					}
 				}
 
-				var url = config.config.url.opportunityList;
+				var url = config.config.url.host + config.config.url.customerList;
 				axios.get(url, httpConfig)
 				.then((response) =>{
 					this.init = false;
@@ -144,9 +152,16 @@
 
 				this.loading = true;
 
+				var customerType = '';
+				if (this.customerType == '有效客户'){
+					customerType = 'active';
+				}else{
+					customerType = 'potential';
+				}
+
 				var httpConfig = {
 					params: {
-    					optyStatus: this.opportunityType,
+    					type: this.customerType,
     					empId: this.user.id,
     					orderText: 1,
     					userOrgId: this.user.orgId,
@@ -156,7 +171,7 @@
   					}
 				}
 
-				var url = config.config.url.opportunityList;
+				var url = config.config.url.host + config.config.url.customerList;
 				axios.get(url, httpConfig)
 				.then((response) =>{
 					this.loading = false;
@@ -182,10 +197,10 @@
 				this.searchPopupVisible = true;
 			},
 			closeSearchPopup: function () {
-				if (this.searchCondition.opportunityType != this.opportunityType
+				if (this.searchCondition.customerType != this.customerType
 					|| this.searchCondition.belongTo != this.belongTo
 					|| this.searchCondition.searchKey != this.searchKey){
-					this.searchCondition.opportunityType = this.opportunityType;
+					this.searchCondition.customerType = this.customerType;
 					this.searchCondition.belongTo = this.belongTo;
 					this.searchCondition.searchKey = this.searchKey;
 
@@ -207,12 +222,12 @@
 				init: true, //是否初始化
 				user: this.$store.getters.getUserInfo,
 				searchPopupVisible: false,
-				opportunityType: '全部',
-				opportunityTypeOptions: ['全部', '商机识别', '商机验证', '商机确认', '方案设计'],
-				belongTo: '我的商机',
-				belongToOptions: ['我的商机', '我团队的商机'],
+				customerType: '有效客户',
+				customerTypeOptions: ['有效客户', '潜在客户'], 
+				belongTo: '我的客户',
+				belongToOptions: ['我的客户', '我团队的客户', '我部门的客户', '我分管的客户', '公司客户'],
 				searchKey: '',
-				searchCondition: {opportunityType:'全部', belongTo:'我的商机',searchKey:''}
+				searchCondition: {customerType:'有效客户', belongTo:'我的客户',searchKey:''}
 			}
 		}
 	}
@@ -291,7 +306,7 @@
 
 	}
 
-	.type span{
+	.owner span, .address span{
 		display: inline-block;
 		font-size: 14px;
 		color: #999;
@@ -299,21 +314,11 @@
 		vertical-align: bottom;
 	}
 
-	.stage{
-		border: 1px solid #00a0e2;
-   		color: #00a0e2;
-   		border-radius: 3px;
-   		padding: 0 3px;
-   		display: inline-block;
-		font-size: 12px;
+	.owner img, .address img{
+		width: 20px;
+		height: 20px;
+		vertical-align: bottom;
 	}
 
-	.status{
-		border: 1px solid red;
-   		color: red;
-   		border-radius: 3px;
-   		padding: 0 3px;
-   		display: inline-block;
-		font-size: 12px;
-	}
+	
 </style>

@@ -182,13 +182,6 @@
 					console.log('出现问题:' + response);
 				})
 			},
-			changeTab: function (tab) {
-				if (this.actionStatus == tab){
-					return;
-				}
-				this.actionStatus = tab;
-				this.loadData();
-			},
 			add: function () {
 				console.log('add!'); 
 			},

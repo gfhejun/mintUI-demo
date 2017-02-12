@@ -60,6 +60,10 @@ FastClick.attach(document.body)
 
 //自定义过滤器
 Vue.filter("longText", function(text, size) {
+	if (text == undefined || text == '') {
+		return text;
+	}
+
 	if (text.length > size && text.length > 0) {
 		return text.substring(0, size) + '...';
 	}
