@@ -9,6 +9,7 @@ import 'mint-ui/lib/style.css'
 
 import Home from './components/home/Home'
 import CustomerSearch from './components/customer/CustomerSearch'
+import CustomerList from './components/customer/CustomerList'
 import ActivityList from './components/activity/ActivityList'
 import OpportunityList from './components/opportunity/OpportunityList'
 import ContactList from './components/contact/ContactList'
@@ -25,6 +26,10 @@ const routes = [{
 	path: '/customersearch',
 	component: CustomerSearch,
 	name: 'customersearch'
+}, {
+	path: '/customerlist',
+	component: CustomerList,
+	name: 'customerlist'
 }, {
 	path: '/activitylist',
 	component: ActivityList,
@@ -49,9 +54,9 @@ const router = new VueRouter({
 FastClick.attach(document.body)
 
 //自定义过滤器
-Vue.filter("longText", function(text) {
-	if (text.length > 18) {
-		return text.substring(0, 17) + '...';
+Vue.filter("longText", function(text, size) {
+	if (text.length > size && text.length > 0) {
+		return text.substring(0, size) + '...';
 	}
 	return text;
 })

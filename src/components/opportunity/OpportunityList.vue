@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<mt-header fixed title="我的商机">
+		<mt-header fixed title="商机管理">
 			<router-link to="/" slot="left">
     			<mt-button icon="back"></mt-button>
   			</router-link>
@@ -11,14 +11,36 @@
 				</mt-button>
   			</span>
 		</mt-header>
-		<div class="tab">
-			<button-tab>
-		      <button-tab-item @on-item-click="changeTab('全部')" selected>全部</button-tab-item>
-		      <button-tab-item @on-item-click="changeTab('商机识别')">商机识别</button-tab-item>
-		      <button-tab-item @on-item-click="changeTab('商机验证')">商机验证</button-tab-item>
-		      <button-tab-item @on-item-click="changeTab('商机确认')">商机确认</button-tab-item>
-		      <button-tab-item @on-item-click="changeTab('方案设计')">方案设计</button-tab-item>
-		    </button-tab>
+		<mt-popup class="searchPopup"
+  			v-model="searchPopupVisible"
+  			:closeOnClickModal="false"
+  			position="right">
+  			<div>
+  				<mt-header fixed title="请选择筛选条件">
+  					<span slot="left">
+  						<mt-button icon="back" @click="closeSearchPopup"></mt-button>
+  					</span>
+  				</mt-header>
+  				<div>
+  					<mt-radio
+					  title="商机类型"
+					  v-model="opportunityType"
+					  :options="opportunityTypeOptions">
+					</mt-radio>
+					<mt-radio
+					  title="商机归属"
+					  v-model="belongTo"
+					  :options="belongToOptions">
+					</mt-radio>
+					<mt-field placeholder="根据商机名称搜索（支持模糊匹配）" v-model="searchKey" style="margin-top:30px"></mt-field>
+  				</div>
+  			</div>
+		</mt-popup>
+		<div class="searchArea">
+			<div class="title">筛选:</div>
+			<span>{{opportunityType}}</span>
+			<span>{{belongTo}}</span>
+			<span v-if="searchKey">{{searchKey | longText(8)}}</span>
 		</div>
 		<div class="list-content" 
 			v-infinite-scroll="loadMore"
@@ -32,7 +54,7 @@
 					<span class="name">{{item.name}}</span>
 				</div>
 				<div class="type">
-					<span>{{item.gfrequiredtype | longText}}</span>
+					<span>{{item.gfrequiredtype | longText(18)}}</span>
 				</div>
 				<div style="margin: 5px 0 5px 0">
 					<span class="status">{{item.status}}</span>
@@ -51,7 +73,7 @@
 </template>
 <script type="text/javascript">
 	import Vue from 'vue'
-	import { Header, MessageBox, Spinner, InfiniteScroll } from 'mint-ui'
+	import { Header, MessageBox, Spinner, InfiniteScroll, Popup, Radio, Field } from 'mint-ui'
 	import { ButtonTab, ButtonTabItem } from 'vux'
 	import axios from 'axios'
 	import config from '../../util/config'
@@ -60,6 +82,9 @@
 
 	Vue.component(Header.name, Header);
 	Vue.component(Spinner.name, Spinner);
+	Vue.component(Popup.name, Popup);
+	Vue.component(Radio.name, Radio);
+	Vue.component(Field.name, Field);
 
 	export default{
 		components:{
@@ -80,12 +105,13 @@
 				
 				var httpConfig = {
 					params: {
-    					optyStatus: this.optyStatus,
+    					optyStatus: this.opportunityType,
     					empId: this.user.id,
     					orderText: 1,
     					userOrgId: this.user.orgId,
     					userPositionId: this.user.postId,
-    					page: 1
+    					page: 1,
+    					visibility: this.belongTo
   					}
 				}
 
@@ -120,12 +146,13 @@
 
 				var httpConfig = {
 					params: {
-    					optyStatus: this.optyStatus,
+    					optyStatus: this.opportunityType,
     					empId: this.user.id,
     					orderText: 1,
     					userOrgId: this.user.orgId,
     					userPositionId: this.user.postId,
-    					page: this.nextPage
+    					page: this.nextPage,
+    					visibility: this.belongTo
   					}
 				}
 
@@ -159,7 +186,20 @@
 				console.log('add!'); 
 			},
 			search: function () {
-				console.log('search!');
+				this.searchPopupVisible = true;
+			},
+			closeSearchPopup: function () {
+				if (this.searchCondition.opportunityType != this.opportunityType
+					|| this.searchCondition.belongTo != this.belongTo
+					|| this.searchCondition.searchKey != this.searchKey){
+					this.searchCondition.opportunityType = this.opportunityType;
+					this.searchCondition.belongTo = this.belongTo;
+					this.searchCondition.searchKey = this.searchKey;
+
+					this.loadData();
+				}
+
+				this.searchPopupVisible = false;
 			}
 		},
 		created(){
@@ -167,42 +207,51 @@
 		},
 		data(){
 			return{
-				optyStatus: '全部', //当前页
 				result: [], //数据列表
 				loading: false, //是否正在加载数据
 				disableLoadingMore: true, //禁止加载更多
 				nextPage: 2, //下一页页码
 				init: true, //是否初始化
-				user: this.$store.getters.getUserInfo
+				user: this.$store.getters.getUserInfo,
+				searchPopupVisible: false,
+				opportunityType: '全部',
+				opportunityTypeOptions: ['全部', '商机识别', '商机验证', '商机确认', '方案设计'],
+				belongTo: '我的商机',
+				belongToOptions: ['我的商机', '我团队的商机'],
+				searchKey: '',
+				searchCondition: {opportunityType:'全部', belongTo:'我的商机',searchKey:''}
 			}
 		}
 	}
 </script>
 <style type="text/css" scoped>
-	.tab{
+	.searchPopup{
+		height: 100%;
+		width: 100%;
+	}
+
+	.searchPopup > div > div{
 		margin-top: 50px;
-		padding: 0 5px;
 	}
 
-	.tab div a{
-		font-size: 10px;
-		line-height: 25px;
-		height: 25px;
+	.searchArea{
+		margin-top: 45px;
+		padding: 5px;
 	}
 
-	.tab div a:first-child{
-		border-top-left-radius: 8px;
-		border-bottom-left-radius: 8px;
+	.searchArea div{
+		display: inline-block;
+		margin-left: 5px;
+		font-size: 15px;
 	}
 
-	.tab div a:last-child{
-		border-top-right-radius: 8px;
-		border-bottom-right-radius: 8px;
-	}
-
-	.vux-button-group > a.vux-button-group-current{
-		border-color: #26a2ff;
-		background-color: #26a2ff;
+	.searchArea span{
+		border: 1px solid #00a0e2;
+   		color: #00a0e2;
+   		border-radius: 3px;
+   		padding: 0 3px;
+   		display: inline-block;
+		font-size: 12px;
 	}
 
 	.add{
@@ -273,5 +322,4 @@
    		display: inline-block;
 		font-size: 12px;
 	}
-
 </style>

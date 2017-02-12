@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<mt-header fixed title="我的客户">
+		<mt-header fixed title="联系人管理">
 			<router-link to="/" slot="left">
 				<mt-button icon="back"></mt-button>
 			</router-link>

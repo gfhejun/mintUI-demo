@@ -11,13 +11,20 @@
 	</div>
 </template>
 <script type="text/javascript">
+	import Vue from 'vue'
+	import {MessageBox} from 'mint-ui';
+
 	export default{
 		components:{
 			
 		},
 		methods:{
 			goto: function (link) {
-				this.$router.push('/' + link); 
+				if (link == ''){
+					MessageBox('提示', '功能开发中，敬请期待！');
+				}else{
+					this.$router.push('/' + link); 
+				}
 			}
 		},
 		created () {
@@ -40,13 +47,13 @@
 			return{
 				items:[
 					{name:'客户查询',icon:'search.png',link:'customersearch'},
-					{name:'我的客户',icon:'customer.png',link:'contactlist'},
-					{name:'我的商机',icon:'opportunity.png',link:'opportunitylist'},
-					{name:'我的活动',icon:'activity.png',link:'activitylist'},
-					{name:'我的工时',icon:'worktime.png',link:'customersearch'},
-					{name:'我的日程',icon:'schedule.png',link:'customersearch'},
-					{name:'交叉销售',icon:'salesopportunity.png',link:'customersearch'},
-					{name:'业务与产品',icon:'product.png',link:'customersearch'}
+					{name:'客户管理',icon:'customer.png',link:'customerlist'},
+					{name:'商机管理',icon:'opportunity.png',link:'opportunitylist'},
+					{name:'活动管理',icon:'activity.png',link:'activitylist'},
+					{name:'工时管理',icon:'worktime.png',link:''},
+					{name:'日程管理',icon:'schedule.png',link:''},
+					{name:'交叉销售',icon:'salesopportunity.png',link:''},
+					{name:'业务与产品',icon:'product.png',link:''}
 				],
 				uiItems:[]
 			}
@@ -76,5 +83,13 @@
   .badge{
     float: right;
     margin-right: 5px;
+  }
+
+  .mint-msgbox-title{
+  	color: #999 !important;
+  }
+
+  .mint-msgbox-message{
+  	color: #333;
   }
 </style>
