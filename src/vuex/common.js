@@ -11,15 +11,23 @@ const common = {
 			deptName: '战略客户关系管理部',
 			postId: '1-5A-4576',
 			postName: '战略客户关系管理部客户关系管理岗'
+		},
+		home: {
+			selected: '主页'
 		}
 	},
 	mutations: {
-
+		changeHomeTab(state, tab) {
+			state.home.selected = tab;
+		}
 	},
 	actions: {},
 	getters: {
 		getUserInfo: state => {
 			return state.user;
+		},
+		getCurrentHomePage: state => {
+			return state.home.selected;
 		}
 	}
 }

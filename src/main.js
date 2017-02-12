@@ -13,6 +13,7 @@ import CustomerList from './components/customer/CustomerList'
 import ActivityList from './components/activity/ActivityList'
 import OpportunityList from './components/opportunity/OpportunityList'
 import ContactList from './components/contact/ContactList'
+import UserInfo from './components/setting/UserInfo'
 import store from './vuex/store'
 
 Vue.use(MintUI)
@@ -42,6 +43,10 @@ const routes = [{
 	path: '/opportunitylist',
 	component: OpportunityList,
 	name: 'opportunitylist'
+}, {
+	path: '/userinfo',
+	component: UserInfo,
+	name: 'userinfo'
 }, {
 	path: '*',
 	redirect: Home

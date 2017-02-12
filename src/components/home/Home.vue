@@ -52,7 +52,12 @@ export default {
   },
   data () {
     return {
-      selected: '主页'
+      selected: this.$store.getters.getCurrentHomePage
+    }
+  },
+  watch: {
+    selected: function (newValue) {
+      this.$store.commit('changeHomeTab', newValue);
     }
   }
 }
