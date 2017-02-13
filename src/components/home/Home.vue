@@ -16,15 +16,15 @@
     </div>
     <mt-tabbar v-model="selected">
       <mt-tab-item id="主页">
-        <img slot="icon" src="../../assets/home.png">
+        <vui-icon slot="icon" name="home"></vui-icon>
         主页
       </mt-tab-item>
       <mt-tab-item id="消息">
-        <img slot="icon" src="../../assets/message.png">
+        <vui-icon slot="icon" name="message"></vui-icon>
         消息
       </mt-tab-item>
       <mt-tab-item id="设置">
-        <img slot="icon" src="../../assets/set.png">
+        <vui-icon slot="icon" name="settings"></vui-icon>
         设置
       </mt-tab-item>
     </mt-tabbar>

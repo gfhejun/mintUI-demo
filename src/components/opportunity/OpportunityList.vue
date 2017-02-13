@@ -7,7 +7,7 @@
   			<span slot="right">
 				<mt-button icon="search" @click="search"></mt-button>
 				<mt-button class="add" @click="add">
-					<img src="../../assets/add.png">
+					<vui-icon name="add"></vui-icon>
 				</mt-button>
   			</span>
 		</mt-header>
@@ -252,9 +252,10 @@
 		vertical-align: middle;
 	}
 
-	.add img{
-		width: 30px;
-		height: 30px;
+	.add .vui-icon{
+		fill: white;
+		width: 20px;
+		height: 20px;
 	}
 
 	.list-content{

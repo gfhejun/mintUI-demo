@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import VuiIcon from 'vui-icon'
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
@@ -10,6 +11,7 @@ import 'mint-ui/lib/style.css'
 import Home from './components/home/Home'
 import CustomerSearch from './components/customer/CustomerSearch'
 import CustomerList from './components/customer/CustomerList'
+import CustomerHome from './components/customer/CustomerHome'
 import ActivityList from './components/activity/ActivityList'
 import OpportunityList from './components/opportunity/OpportunityList'
 import ContactList from './components/contact/ContactList'
@@ -18,6 +20,7 @@ import store from './vuex/store'
 
 Vue.use(MintUI)
 Vue.use(VueRouter)
+Vue.use(VuiIcon)
 
 const routes = [{
 	path: '/',
@@ -31,6 +34,10 @@ const routes = [{
 	path: '/customerlist',
 	component: CustomerList,
 	name: 'customerlist'
+}, {
+	path: '/customerhome',
+	component: CustomerHome,
+	name: 'customerhome'
 }, {
 	path: '/activitylist',
 	component: ActivityList,

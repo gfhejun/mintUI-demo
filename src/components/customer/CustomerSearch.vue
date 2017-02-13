@@ -28,13 +28,13 @@
 				<div class="left">
 					<div class="customer">{{item.name}}</div>
 					<div class="serve-team">
-						<img src="../../assets/user.png">
+						<vui-icon name="people"></vui-icon>
 						<span>{{item.serve_team}}</span>
 					</div>
 				</div>
 				<div class="right">
-					<img v-if="item.is_visited==0" src="../../assets/star.png" @click="potentialCustomer(item.name)">
-					<img v-if="item.is_visited==1" src="../../assets/star_yellow.png">	
+					<vui-icon v-if="item.is_visited==0" name="favor" @click="potentialCustomer(item.name)"></vui-icon>
+					<vui-icon v-if="item.is_visited==1" name="favor"></vui-icon>
 				</div>
 			</div>
 			<div class="load-more" v-if="!init">
@@ -276,12 +276,18 @@
 		text-align: center;
 	}
 
-	.right img{
+	.right .vui-icon{
 		width: 25px;
 		height: 25px;
 	}
 
-	.serve-team img{
+	.right .vui-cion:nth-child(2){
+		width: 25px;
+		height: 25px;
+		fill: #FFD700;
+	}
+
+	.serve-team .vui-icon{
 		width: 25px;
 		height: 25px;
 		vertical-align: bottom;

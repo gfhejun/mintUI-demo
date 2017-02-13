@@ -7,7 +7,7 @@
   			<span slot="right">
 				<mt-button icon="search" @click="search"></mt-button>
 				<mt-button class="add" @click="add">
-					<img src="../../assets/add.png">
+					<vui-icon name="add"></vui-icon>
 				</mt-button>
   			</span>
 		</mt-header>
@@ -49,16 +49,16 @@
 			<div class="spinner" v-if="loading && init">
 				<mt-spinner type="triple-bounce" color="#26a2ff" :size="30"></mt-spinner>
 			</div>
-			<div class="list-item" v-for="item in result">
+			<div class="list-item" v-for="item in result" @click="showCustomerHome(item.id)">
 				<div>
 					<span class="name">{{item.name}}</span>
 				</div>
 				<div class="owner">
-					<img src="../../assets/user.png">
+					<vui-icon name="people"></vui-icon>
 				    <span>{{item.owner_name}}</span>
 				</div>
 				<div class="address">
-					<img src="../../assets/location.png">
+					<vui-icon name="location"></vui-icon>
 				    <span>{{item.office_addr | longText(15) }}</span>
 				</div>
 			</div>
@@ -208,6 +208,10 @@
 				}
 
 				this.searchPopupVisible = false;
+			},
+			//进入客户主页
+			showCustomerHome: function (id) {
+				this.$router.push({ name: 'customerhome', params: { id: id }}); 
 			}
 		},
 		created(){
@@ -267,9 +271,10 @@
 		vertical-align: middle;
 	}
 
-	.add img{
-		width: 30px;
-		height: 30px;
+	.add .vui-icon{
+    	fill: white;
+    	width: 20px;
+    	height: 20px;
 	}
 
 	.list-content{
@@ -314,11 +319,9 @@
 		vertical-align: bottom;
 	}
 
-	.owner img, .address img{
+	.owner .vui-icon, .address .vui-icon{
 		width: 20px;
 		height: 20px;
 		vertical-align: bottom;
 	}
-
-	
 </style>

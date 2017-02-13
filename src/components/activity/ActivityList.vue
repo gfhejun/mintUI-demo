@@ -7,7 +7,7 @@
   			<span slot="right">
 				<mt-button icon="search" @click="search"></mt-button>
 				<mt-button class="add" @click="add">
-					<img src="../../assets/add.png">
+					<vui-icon name="add"></vui-icon>
 				</mt-button>
   			</span>
 		</mt-header>
@@ -54,7 +54,7 @@
 					<span class="description">{{item.description}}</span>
 				</div>
 				<div class="customer" v-if="item.accountname">
-					<img src="../../assets/user.png">
+					<vui-icon name="people"></vui-icon>
 				    <span>{{item.accountname | longText(18)}}</span>
 				</div>
 				<div style="margin: 5px 0 5px 0">
@@ -259,9 +259,10 @@
 		vertical-align: middle;
 	}
 
-	.add img{
-		width: 30px;
-		height: 30px;
+	.add .vui-icon{
+    	fill: white;
+    	width: 20px;
+    	height: 20px;
 	}
 
 	.list-content{
@@ -306,7 +307,7 @@
 		vertical-align: bottom;
 	}
 
-	.customer img{
+	.customer .vui-icon{
 		width: 20px;
 		height: 20px;
 		vertical-align: bottom;
