@@ -2,7 +2,6 @@
   "name": "mintui-demo",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "onlyforhebe <342552254@qq.com>",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",

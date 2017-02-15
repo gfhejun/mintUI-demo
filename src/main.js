@@ -7,7 +7,7 @@ import VueRouter from 'vue-router'
 import App from './App'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
-
+import scrollRecord from 'route-data/scrollRecord'
 import Home from './components/home/Home'
 import CustomerSearch from './components/customer/CustomerSearch'
 import CustomerList from './components/customer/CustomerList'
@@ -60,7 +60,8 @@ const routes = [{
 }]
 
 const router = new VueRouter({
-	routes
+	routes,
+	mode: 'history'
 })
 
 FastClick.attach(document.body)
@@ -76,6 +77,8 @@ Vue.filter("longText", function(text, size) {
 	}
 	return text;
 })
+
+Vue.directive('scroll-record', scrollRecord);
 
 /* eslint-disable no-new */
 new Vue({

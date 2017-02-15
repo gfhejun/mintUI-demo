@@ -42,14 +42,15 @@
 			<span>{{belongTo}}</span>
 			<span v-if="searchKey">{{searchKey | longText(8)}}</span>
 		</div>
-		<div class="list-content" 
+		<div class="list-content" v-scroll-record
 			v-infinite-scroll="loadMore"
 			infinite-scroll-disabled="disableLoadingMore"
   			infinite-scroll-distance="10">
 			<div class="spinner" v-if="loading && init">
 				<mt-spinner type="triple-bounce" color="#26a2ff" :size="30"></mt-spinner>
 			</div>
-			<div class="list-item" v-for="item in result" @click="showCustomerHome(item.id)">
+			<div>
+				<div class="list-item" v-for="item in list" @click="showCustomerHome(item.id)">
 				<div>
 					<span class="name">{{item.name}}</span>
 				</div>
@@ -59,9 +60,11 @@
 				</div>
 				<div class="address">
 					<vui-icon name="location"></vui-icon>
-				    <span>{{item.office_addr | longText(15) }}</span>
+				    <span>{{item.office_addr | longText(18) }}</span>
 				</div>
 			</div>
+			</div>
+			
 			<div class="load-more" v-if="!init">
 				<div v-if="!loading && disableLoadingMore">已无更多商机</div>
 				<div v-if="!disableLoadingMore">
@@ -78,6 +81,8 @@
 	import { ButtonTab, ButtonTabItem } from 'vux'
 	import axios from 'axios'
 	import config from '../../util/config'
+	import is from 'is'
+	import mylist from 'mixins'
 
 	Vue.use(InfiniteScroll);
 
@@ -88,110 +93,17 @@
 	Vue.component(Field.name, Field);
 
 	export default{
+		mixins:[mylist],
 		components:{
 			ButtonTab,
 			ButtonTabItem
 		},
 		methods:{
-			//加载数据
-			loadData: function () {
-				if (this.loading){
-					return;
-				}
-				this.init = true;
-				this.loading = true;
-				this.disableLoadingMore = true;
-				this.result = [];
-				this.nextPage = 2;
-				
-				var customerType = '';
-				if (this.customerType == '有效客户'){
-					customerType = 'active';
-				}else{
-					customerType = 'potential';
-				}
-
-				var httpConfig = {
-					params: {
-    					type: customerType,
-    					empId: this.user.id,
-    					orderText: 1,
-    					userOrgId: this.user.orgId,
-    					userPositionId: this.user.postId,
-    					page: 1,
-    					visibility: this.belongTo
-  					}
-				}
-
-				var url = config.config.url.host + config.config.url.customerList;
-				axios.get(url, httpConfig)
-				.then((response) =>{
-					this.init = false;
-					this.loading = false;
-
-					if (response.status == 200){
-						this.result = response.data.rows;
-						if (this.result.length >= response.data.total){
-							//已无更多数据时显示提示，并且禁止上拉加载更多
-							this.disableLoadingMore = true;
-						}else{
-							this.disableLoadingMore = false
-						}
-					}
-				}, (response) => {
-					this.loading = false;
-					console.log('出现问题:' + response);
-				}) 
-			},
-
-			//加载更多
 			loadMore: function () {
-				if (this.loading){
-					return;
-				}
-
-				this.loading = true;
-
-				var customerType = '';
-				if (this.customerType == '有效客户'){
-					customerType = 'active';
-				}else{
-					customerType = 'potential';
-				}
-
-				var httpConfig = {
-					params: {
-    					type: this.customerType,
-    					empId: this.user.id,
-    					orderText: 1,
-    					userOrgId: this.user.orgId,
-    					userPositionId: this.user.postId,
-    					page: this.nextPage,
-    					visibility: this.belongTo
-  					}
-				}
-
-				var url = config.config.url.host + config.config.url.customerList;
-				axios.get(url, httpConfig)
-				.then((response) =>{
-					this.loading = false;
-					if (response.status == 200){
-						this.nextPage++;
-						this.result = this.result.concat(response.data.rows);
-						if (this.result.length >= response.data.total){
-							//已无更多数据时显示提示，并且禁止上拉加载更多
-							this.disableLoadingMore = true;
-						}else{
-							this.disableLoadingMore = false;
-						}
-					}
-				}, (response) => {
-					this.loading = false;
-					console.log('出现问题:' + response);
-				})
+				this.loadData();
 			},
 			add: function () {
-				console.log('add!'); 
+				console.log('add!!');
 			},
 			search: function () {
 				this.searchPopupVisible = true;
@@ -200,11 +112,31 @@
 				if (this.searchCondition.customerType != this.customerType
 					|| this.searchCondition.belongTo != this.belongTo
 					|| this.searchCondition.searchKey != this.searchKey){
+
 					this.searchCondition.customerType = this.customerType;
 					this.searchCondition.belongTo = this.belongTo;
 					this.searchCondition.searchKey = this.searchKey;
 
-					this.loadData();
+					var customerType = 'active';
+					if (this.customerType == '有效客户'){
+						customerType = 'active';
+					}else{
+						customerType = 'potential';
+					}
+
+					var config = {
+                    	params: {
+	    					type: customerType,
+	    					empId: this.user.id,
+	    					orderText: 1,
+	    					userOrgId: this.user.orgId,
+	    					userPositionId: this.user.postId,
+	    					page: 1,
+	    					visibility: this.belongTo
+  						}
+  					}
+
+					this.loadData(config);
 				}
 
 				this.searchPopupVisible = false;
@@ -212,18 +144,33 @@
 			//进入客户主页
 			showCustomerHome: function (id) {
 				this.$router.push({ name: 'customerhome', params: { id: id }}); 
+			},
+			initList: function () {
+				var customerType = 'active';
+				
+				if (this.customerType == '有效客户'){
+					customerType = 'active';
+				}else{
+					customerType = 'potential';
+				}
+
+				 return {
+                    url: config.config.url.host + config.config.url.customerList,
+                    config: {
+                    	params: {
+    					type: customerType,
+    					empId: this.user.id,
+    					orderText: 1,
+    					userOrgId: this.user.orgId,
+    					userPositionId: this.user.postId,
+    					page: this.page,
+    					visibility: this.belongTo
+  					}}
+                }
 			}
-		},
-		created(){
-			this.loadData();
 		},
 		data(){
 			return{
-				result: [], //数据列表
-				loading: false, //是否正在加载数据
-				disableLoadingMore: true, //禁止加载更多
-				nextPage: 2, //下一页页码
-				init: true, //是否初始化
 				user: this.$store.getters.getUserInfo,
 				searchPopupVisible: false,
 				customerType: '有效客户',
