@@ -54,11 +54,10 @@ export default {
 				config = newConfig;
 			}
 
-			console.log(newConfig);
-			console.log(config);
-
 			if (config.params.page == 1) {
+				var tempKey = this.list.key;
 				this.list = [];
+				this.list.key = tempKey;
 			}
 
 			axios.get(url, config)
