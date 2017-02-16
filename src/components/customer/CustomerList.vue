@@ -1,9 +1,7 @@
 <template>
 	<div>
 		<mt-header fixed title="客户管理">
-			<router-link to="/" slot="left">
-    			<mt-button icon="back"></mt-button>
-  			</router-link>
+			<mt-button icon="back" slot="left" @click="back"></mt-button>
   			<span slot="right">
 				<mt-button icon="search" @click="search"></mt-button>
 				<mt-button class="add" @click="add">
@@ -77,11 +75,10 @@
 </template>
 <script type="text/javascript">
 	import Vue from 'vue'
+	import { mapState } from 'vuex'
 	import { Header, MessageBox, Spinner, InfiniteScroll, Popup, Radio, Field } from 'mint-ui'
-	import { ButtonTab, ButtonTabItem } from 'vux'
 	import axios from 'axios'
 	import config from '../../util/config'
-	import is from 'is'
 	import mylist from 'mixins'
 
 	Vue.use(InfiniteScroll);
@@ -94,10 +91,6 @@
 
 	export default{
 		mixins:[mylist],
-		components:{
-			ButtonTab,
-			ButtonTabItem
-		},
 		methods:{
 			loadMore: function () {
 				this.loadData();
@@ -108,14 +101,26 @@
 			search: function () {
 				this.searchPopupVisible = true;
 			},
+			back: function () {
+				this.$store.commit('resetCustomerListSearch');
+				this.$router.replace({path: '/'});
+			},
 			closeSearchPopup: function () {
 				if (this.searchCondition.customerType != this.customerType
 					|| this.searchCondition.belongTo != this.belongTo
 					|| this.searchCondition.searchKey != this.searchKey){
 
-					this.searchCondition.customerType = this.customerType;
-					this.searchCondition.belongTo = this.belongTo;
-					this.searchCondition.searchKey = this.searchKey;
+					var search = {
+						condition: {
+							customerType: this.customerType,
+							belongTo: this.belongTo,
+							key: this.searchKey
+						},
+						key: this.searchKey,
+						customerType: this.customerType,
+						belongTo: this.belongTo
+					};
+					this.$store.commit('updateCustomerListSearch', search);
 
 					var customerType = 'active';
 					if (this.customerType == '有效客户'){
@@ -173,12 +178,12 @@
 			return{
 				user: this.$store.getters.getUserInfo,
 				searchPopupVisible: false,
-				customerType: '有效客户',
-				customerTypeOptions: ['有效客户', '潜在客户'], 
-				belongTo: '我的客户',
+				customerType: this.$store.state.customerList.search.customerType,
+				customerTypeOptions: ['有效客户', '潜在客户'],
+				belongTo: this.$store.state.customerList.search.belongTo,
 				belongToOptions: ['我的客户', '我团队的客户', '我部门的客户', '我分管的客户', '公司客户'],
-				searchKey: '',
-				searchCondition: {customerType:'有效客户', belongTo:'我的客户',searchKey:''}
+				searchKey: this.$store.state.customerList.search.key,
+				searchCondition: this.$store.state.customerList.search.condition
 			}
 		}
 	}

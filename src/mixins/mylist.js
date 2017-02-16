@@ -55,6 +55,7 @@ export default {
 			}
 
 			if (config.params.page == 1) {
+				//在新的list里不设置key，就无法恢复到原来的位置
 				var tempKey = this.list.key;
 				this.list = [];
 				this.list.key = tempKey;
