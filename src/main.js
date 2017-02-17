@@ -78,9 +78,9 @@ Vue.filter("longText", function(text, size) {
 	return text;
 })
 
+//自定义指令
 Vue.directive('scroll-record', scrollRecord);
 
-/* eslint-disable no-new */
 new Vue({
 	router,
 	store,

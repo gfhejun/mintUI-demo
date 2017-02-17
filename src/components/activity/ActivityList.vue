@@ -1,9 +1,7 @@
 <template>
 	<div>
 		<mt-header fixed title="活动管理">
-			<router-link to="/" slot="left">
-    			<mt-button icon="back"></mt-button>
-  			</router-link>
+			<mt-button icon="back" slot="left" @click="back"></mt-button>
   			<span slot="right">
 				<mt-button icon="search" @click="search"></mt-button>
 				<mt-button class="add" @click="add">
@@ -32,7 +30,7 @@
 					  v-model="belongTo"
 					  :options="belongToOptions">
 					</mt-radio>
-					<mt-field placeholder="根据活动名称搜索（支持模糊匹配）" v-model="searchKey" style="margin-top:30px"></mt-field>
+					<mt-field placeholder="输入活动名称搜索（支持模糊匹配）" v-model="searchKey" style="margin-top:30px"></mt-field>
   				</div>
   			</div>
 		</mt-popup>
@@ -42,14 +40,14 @@
 			<span>{{belongTo}}</span>
 			<span v-if="searchKey">{{searchKey | longText(8)}}</span>
 		</div>
-		<div class="list-content" 
+		<div class="list-content" v-scroll-record
 			v-infinite-scroll="loadMore"
 			infinite-scroll-disabled="disableLoadingMore"
   			infinite-scroll-distance="10">
 			<div class="spinner" v-if="loading && init">
 				<mt-spinner type="triple-bounce" color="#26a2ff" :size="30"></mt-spinner>
 			</div>
-			<div class="list-item" v-for="item in result">
+			<div class="list-item" v-for="item in list">
 				<div>
 					<span class="description">{{item.description}}</span>
 				</div>
@@ -79,9 +77,9 @@
 <script type="text/javascript">
 	import Vue from 'vue'
 	import { Header, MessageBox, Spinner, InfiniteScroll, Popup, Radio, Field} from 'mint-ui'
-	import { ButtonTab, ButtonTabItem } from 'vux'
 	import axios from 'axios'
 	import config from '../../util/config'
+	import mylist from 'mixins'
 
 	Vue.use(InfiniteScroll);
 
@@ -92,95 +90,31 @@
 	Vue.component(Field.name, Field);
 
 	export default{
-		components:{
-			ButtonTab,
-			ButtonTabItem
-		},
+		mixins:[mylist],
 		methods:{
-			//加载数据
-			loadData: function () {
-				if (this.loading){
-					return;
-				}
-				this.init = true;
-				this.loading = true;
-				this.disableLoadingMore = true;
-				this.result = [];
-				this.nextPage = 2;
-				
-				var httpConfig = {
-					params: {
-    					actionStatus: this.actionStatus,
-    					empId: this.user.id,
-    					orderText: 1,
-    					userOrgId: this.user.orgId,
-    					userPositionId: this.user.postId,
-    					page: 1,
-    					orderBy: 'created',
-    					visibility: this.belongTo
-  					}
-				}
-
-				var url = config.config.url.host + config.config.url.activityList;
-				axios.get(url, httpConfig)
-				.then((response) =>{
-					this.init = false;
-					this.loading = false;
-
-					if (response.status == 200){
-						this.result = response.data.rows;
-						if (this.result.length >= response.data.total){
-							//已无更多数据时显示提示，并且禁止上拉加载更多
-							this.disableLoadingMore = true;
-						}else{
-							this.disableLoadingMore = false
-						}
-					}
-				}, (response) => {
-					this.loading = false;
-					console.log('出现问题:' + response);
-				}) 
-			},
-
-			//加载更多
 			loadMore: function () {
-				if (this.loading){
-					return;
-				}
-
-				this.loading = true;
-
-				var httpConfig = {
-					params: {
-    					actionStatus: this.actionStatus,
-    					empId: this.user.id,
-    					orderText: 1,
-    					userOrgId: this.user.orgId,
-    					userPositionId: this.user.postId,
-    					page: this.nextPage,
-    					orderBy: 'created',
-    					visibility: this.belongTo
+				this.loadData();
+			},
+			back: function () {
+				this.$store.commit('resetActivityListSearch');
+				this.$router.replace({path: '/'});
+			},
+			initList: function () {
+				 return {
+                    url: config.config.url.host + config.config.url.activityList,
+                    config: {
+                    	params: {
+	    					actionStatus: this.actionStatus,
+	    					empId: this.user.id,
+	    					orderText: 1,
+	    					userOrgId: this.user.orgId,
+	    					userPositionId: this.user.postId,
+	    					page: this.page,
+	    					orderBy: 'created',
+	    					visibility: this.belongTo
+	  					}
   					}
-				}
-
-				var url = config.config.url.host + config.config.url.activityList;
-				axios.get(url, httpConfig)
-				.then((response) =>{
-					this.loading = false;
-					if (response.status == 200){
-						this.nextPage++;
-						this.result = this.result.concat(response.data.rows);
-						if (this.result.length >= response.data.total){
-							//已无更多数据时显示提示，并且禁止上拉加载更多
-							this.disableLoadingMore = true;
-						}else{
-							this.disableLoadingMore = false;
-						}
-					}
-				}, (response) => {
-					this.loading = false;
-					console.log('出现问题:' + response);
-				})
+                }
 			},
 			add: function () {
 				console.log('add!'); 
@@ -192,34 +126,48 @@
 				if (this.searchCondition.actionStatus != this.actionStatus
 					|| this.searchCondition.belongTo != this.belongTo
 					|| this.searchCondition.searchKey != this.searchKey){
-					this.searchCondition.actionStatus = this.actionStatus;
-					this.searchCondition.belongTo = this.belongTo;
-					this.searchCondition.searchKey = this.searchKey;
 
-					this.loadData();
+					var search = {
+						condition: {
+							actionStatus: this.actionStatus,
+							belongTo: this.belongTo,
+							key: this.searchKey
+						},
+						key: this.searchKey,
+						actionStatus: this.actionStatus,
+						belongTo: this.belongTo
+					};
+					this.$store.commit('updateActivityListSearch', search);
+
+					var config = {
+						params: {
+	    					actionStatus: this.actionStatus,
+	    					empId: this.user.id,
+	    					orderText: 1,
+	    					userOrgId: this.user.orgId,
+	    					userPositionId: this.user.postId,
+	    					page: 1,
+	    					orderBy: 'created',
+	    					visibility: this.belongTo
+	  					}
+  					}
+
+					this.loadData(config);
 				}
 
 				this.searchPopupVisible = false;
 			}
 		},
-		created(){
-			this.loadData();
-		},
 		data(){
 			return{
-				result: [], //数据列表
-				loading: false, //是否正在加载数据
-				disableLoadingMore: true, //禁止加载更多
-				nextPage: 2, //下一页页码
-				init: true, //是否初始化
 				user: this.$store.getters.getUserInfo,
 				searchPopupVisible: false,
-				actionStatus: '全部',
+				actionStatus: this.$store.state.activityList.search.actionStatus,
 				actionStatusOptions: ['全部', '进行中', '已完成', '已取消'],
-				belongTo: '我的活动',
+				belongTo: this.$store.state.activityList.search.belongTo,
 				belongToOptions: ['我的活动', '我团队的活动'],
-				searchKey: '',
-				searchCondition: {actionStatus:'全部', belongTo:'我的活动',searchKey:''}
+				searchKey: this.$store.state.activityList.search.key,
+				searchCondition: this.$store.state.activityList.search.condition
 			}
 		}
 	}

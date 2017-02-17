@@ -30,7 +30,7 @@
 					  v-model="belongTo"
 					  :options="belongToOptions">
 					</mt-radio>
-					<mt-field placeholder="根据客户名称搜索（支持模糊匹配）" v-model="searchKey" style="margin-top:30px"></mt-field>
+					<mt-field placeholder="输入客户名称搜索（支持模糊匹配）" v-model="searchKey" style="margin-top:30px"></mt-field>
   				</div>
   			</div>
 		</mt-popup>

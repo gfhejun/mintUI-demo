@@ -1,9 +1,7 @@
 <template>
 	<div>
 		<mt-header fixed title="商机管理">
-			<router-link to="/" slot="left">
-    			<mt-button icon="back"></mt-button>
-  			</router-link>
+			<mt-button icon="back" slot="left" @click="back"></mt-button>
   			<span slot="right">
 				<mt-button icon="search" @click="search"></mt-button>
 				<mt-button class="add" @click="add">
@@ -49,7 +47,7 @@
 			<div class="spinner" v-if="loading && init">
 				<mt-spinner type="triple-bounce" color="#26a2ff" :size="30"></mt-spinner>
 			</div>
-			<div class="list-item" v-for="item in result">
+			<div class="list-item" v-for="item in list">
 				<div>
 					<span class="name">{{item.name}}</span>
 				</div>
@@ -74,9 +72,9 @@
 <script type="text/javascript">
 	import Vue from 'vue'
 	import { Header, MessageBox, Spinner, InfiniteScroll, Popup, Radio, Field } from 'mint-ui'
-	import { ButtonTab, ButtonTabItem } from 'vux'
 	import axios from 'axios'
 	import config from '../../util/config'
+	import mylist from 'mixins'
 
 	Vue.use(InfiniteScroll);
 
@@ -87,93 +85,31 @@
 	Vue.component(Field.name, Field);
 
 	export default{
-		components:{
-			ButtonTab,
-			ButtonTabItem
-		},
+		mixins:[mylist],
 		methods:{
-			//加载数据
-			loadData: function () {
-				if (this.loading){
-					return;
-				}
-				this.init = true;
-				this.loading = true;
-				this.disableLoadingMore = true;
-				this.result = [];
-				this.nextPage = 2;
-				
-				var httpConfig = {
-					params: {
-    					optyStatus: this.opportunityType,
-    					empId: this.user.id,
-    					orderText: 1,
-    					userOrgId: this.user.orgId,
-    					userPositionId: this.user.postId,
-    					page: 1,
-    					visibility: this.belongTo
-  					}
-				}
-
-				var url = config.config.url.opportunityList;
-				axios.get(url, httpConfig)
-				.then((response) =>{
-					this.init = false;
-					this.loading = false;
-
-					if (response.status == 200){
-						this.result = response.data.rows;
-						if (this.result.length >= response.data.total){
-							//已无更多数据时显示提示，并且禁止上拉加载更多
-							this.disableLoadingMore = true;
-						}else{
-							this.disableLoadingMore = false
-						}
-					}
-				}, (response) => {
-					this.loading = false;
-					console.log('出现问题:' + response);
-				}) 
-			},
-
-			//加载更多
 			loadMore: function () {
-				if (this.loading){
-					return;
-				}
-
-				this.loading = true;
-
-				var httpConfig = {
-					params: {
-    					optyStatus: this.opportunityType,
-    					empId: this.user.id,
-    					orderText: 1,
-    					userOrgId: this.user.orgId,
-    					userPositionId: this.user.postId,
-    					page: this.nextPage,
-    					visibility: this.belongTo
+				this.loadData();
+			},
+			back: function () {
+				this.$store.commit('resetOpportunityListSearch');
+				this.$router.replace({path: '/'});
+			},
+			initList: function () {
+				 return {
+                    url: config.config.url.opportunityList,
+                    config: {
+                    	params: {
+	    					visibility: this.belongTo,
+	    					optyStatus: this.opportunityType,
+	    					empId: this.user.id,
+	    					orderText: 1,
+	    					userOrgId: this.user.orgId,
+	    					userPositionId: this.user.postId,
+	    					page: this.page,
+	    					visibility: this.belongTo
+	  					}
   					}
-				}
-
-				var url = config.config.url.opportunityList;
-				axios.get(url, httpConfig)
-				.then((response) =>{
-					this.loading = false;
-					if (response.status == 200){
-						this.nextPage++;
-						this.result = this.result.concat(response.data.rows);
-						if (this.result.length >= response.data.total){
-							//已无更多数据时显示提示，并且禁止上拉加载更多
-							this.disableLoadingMore = true;
-						}else{
-							this.disableLoadingMore = false;
-						}
-					}
-				}, (response) => {
-					this.loading = false;
-					console.log('出现问题:' + response);
-				})
+                }
 			},
 			add: function () {
 				console.log('add!'); 
@@ -185,34 +121,48 @@
 				if (this.searchCondition.opportunityType != this.opportunityType
 					|| this.searchCondition.belongTo != this.belongTo
 					|| this.searchCondition.searchKey != this.searchKey){
-					this.searchCondition.opportunityType = this.opportunityType;
-					this.searchCondition.belongTo = this.belongTo;
-					this.searchCondition.searchKey = this.searchKey;
+					
+					var search = {
+						condition: {
+							opportunityType: this.opportunityType,
+							belongTo: this.belongTo,
+							key: this.searchKey
+						},
+						key: this.searchKey,
+						opportunityType: this.opportunityType,
+						belongTo: this.belongTo
+					};
+					this.$store.commit('updateOpportunityListSearch', search);
 
-					this.loadData();
+					var config = {
+						params: {
+	    					visibility: this.belongTo,
+	    					optyStatus: this.opportunityType,
+	    					empId: this.user.id,
+	    					orderText: 1,
+	    					userOrgId: this.user.orgId,
+	    					userPositionId: this.user.postId,
+	    					page: 1,
+	    					visibility: this.belongTo
+	  					}
+  					}
+
+					this.loadData(config);
 				}
 
 				this.searchPopupVisible = false;
 			}
 		},
-		created(){
-			this.loadData();
-		},
 		data(){
 			return{
-				result: [], //数据列表
-				loading: false, //是否正在加载数据
-				disableLoadingMore: true, //禁止加载更多
-				nextPage: 2, //下一页页码
-				init: true, //是否初始化
 				user: this.$store.getters.getUserInfo,
 				searchPopupVisible: false,
-				opportunityType: '全部',
+				opportunityType: this.$store.state.opportunityList.search.opportunityType,
 				opportunityTypeOptions: ['全部', '商机识别', '商机验证', '商机确认', '方案设计'],
-				belongTo: '我的商机',
+				belongTo: this.$store.state.opportunityList.search.belongTo,
 				belongToOptions: ['我的商机', '我团队的商机'],
-				searchKey: '',
-				searchCondition: {opportunityType:'全部', belongTo:'我的商机',searchKey:''}
+				searchKey: this.$store.state.opportunityList.search.key,
+				searchCondition: this.$store.state.opportunityList.search.condition
 			}
 		}
 	}
