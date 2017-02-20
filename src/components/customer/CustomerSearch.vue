@@ -49,7 +49,7 @@
 </template>
 <script type="text/javascript">
 	import Vue from 'vue'
-	import {Header, Search, Button, MessageBox, Spinner, InfiniteScroll, Badge, TabContainer, TabContainerItem } from 'mint-ui'
+	import {Header, Search, Button, MessageBox, Spinner, InfiniteScroll, Badge, TabContainer, TabContainerItem, Navbar, TabItem } from 'mint-ui'
 	import axios from 'axios'
 	import config from '../../util/config'
 	import { ButtonTab, ButtonTabItem } from 'vux'
@@ -62,6 +62,8 @@
 	Vue.component(Spinner.name, Spinner);
 	Vue.component(TabContainer.name, TabContainer);
 	Vue.component(TabContainerItem.name, TabContainerItem);
+	Vue.component(Navbar.name, Navbar);
+	Vue.component(TabItem.name, TabItem);
 
 	export default{
 		components:{
