@@ -30,12 +30,14 @@
 		created () {
 		    var temp = [];
 			for (var i = 0,j = this.items.length,k = 1; i < j; i++){
-				temp.push(this.items[i]);
-				k++;
-				if (k > 3){
-					this.uiItems.push(temp);
-					temp = [];
-					k = 1;
+				if (this.items[i].show){
+					temp.push(this.items[i]);
+					k++;
+					if (k > 3){
+						this.uiItems.push(temp);
+						temp = [];
+						k = 1;
+					}
 				}
 
 				if (i + 1 == j){
@@ -46,14 +48,14 @@
 		data(){
 			return{
 				items:[
-					{name:'客户查询',icon:'search.png',link:'customersearch'},
-					{name:'客户管理',icon:'customer.png',link:'customerlist'},
-					{name:'商机管理',icon:'opportunity.png',link:'opportunitylist'},
-					{name:'活动管理',icon:'activity.png',link:'activitylist'},
-					{name:'工时管理',icon:'worktime.png',link:''},
-					{name:'日程管理',icon:'schedule.png',link:''},
-					{name:'交叉销售',icon:'salesopportunity.png',link:''},
-					{name:'业务与产品',icon:'product.png',link:''}
+					{name:'客户查询',icon:'search.png',link:'customersearch',show:true},
+					{name:'客户管理',icon:'customer.png',link:'customerlist',show:true},
+					{name:'商机管理',icon:'opportunity.png',link:'opportunitylist',show:true},
+					{name:'活动管理',icon:'activity.png',link:'activitylist',show:true},
+					{name:'工时管理',icon:'worktime.png',link:'',show:false},
+					{name:'日程管理',icon:'schedule.png',link:'',show:false},
+					{name:'交叉销售',icon:'salesopportunity.png',link:'',show:false},
+					{name:'业务与产品',icon:'product.png',link:'',show:false}
 				],
 				uiItems:[]
 			}
