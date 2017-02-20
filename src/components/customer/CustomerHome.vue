@@ -33,7 +33,7 @@
 </template>
 <script type="text/javascript">
 	import Vue from 'vue'
-	import { Header } from 'mint-ui'
+	import { Header, MessageBox } from 'mint-ui'
 	import axios from 'axios'
 	import config from '../../util/config'
 
