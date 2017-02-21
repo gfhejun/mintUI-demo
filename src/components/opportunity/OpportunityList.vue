@@ -9,7 +9,7 @@
 				</mt-button>
   			</span>
 		</mt-header>
-		<mt-popup class="searchPopup"
+		<mt-popup class="search-popup"
   			v-model="searchPopupVisible"
   			:closeOnClickModal="false"
   			position="right">
@@ -34,7 +34,7 @@
   				</div>
   			</div>
 		</mt-popup>
-		<div class="searchArea">
+		<div class="search-area">
 			<div class="title">筛选:</div>
 			<span>{{opportunityType}}</span>
 			<span>{{belongTo}}</span>
@@ -168,27 +168,27 @@
 	}
 </script>
 <style type="text/css" scoped>
-	.searchPopup{
+	.search-popup{
 		height: 100%;
 		width: 100%;
 	}
 
-	.searchPopup > div > div{
+	.search-popup > div > div{
 		margin-top: 50px;
 	}
 
-	.searchArea{
+	.search-area{
 		margin-top: 45px;
 		padding: 5px;
 	}
 
-	.searchArea div{
+	.search-area div{
 		display: inline-block;
 		margin-left: 5px;
 		font-size: 15px;
 	}
 
-	.searchArea span{
+	.search-area span{
 		border: 1px solid white;
    		color: white;
    		background-color: #999;
