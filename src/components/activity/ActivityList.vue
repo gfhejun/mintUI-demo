@@ -4,12 +4,12 @@
 			<mt-button icon="back" slot="left" @click="back"></mt-button>
   			<span slot="right">
 				<mt-button icon="search" @click="search"></mt-button>
-				<mt-button class="add" @click="add">
+				<mt-button class="add" @click="showActivityDetail">
 					<vui-icon name="add"></vui-icon>
 				</mt-button>
   			</span>
 		</mt-header>
-		<mt-popup class="searchPopup"
+		<mt-popup class="search-popup"
   			v-model="searchPopupVisible"
   			:closeOnClickModal="false"
   			position="right">
@@ -34,7 +34,7 @@
   				</div>
   			</div>
 		</mt-popup>
-		<div class="searchArea">
+		<div class="search-area">
 			<div class="title">筛选:</div>
 			<span>{{actionStatus}}</span>
 			<span>{{belongTo}}</span>
@@ -47,7 +47,7 @@
 			<div class="spinner" v-if="loading && init">
 				<mt-spinner type="triple-bounce" color="#26a2ff" :size="30"></mt-spinner>
 			</div>
-			<div class="list-item" v-for="item in list">
+			<div class="list-item" v-for="item in list" @click="showActivityDetail(item.id)">
 				<div>
 					<span class="description">{{item.description}}</span>
 				</div>
@@ -116,9 +116,6 @@
   					}
                 }
 			},
-			add: function () {
-				console.log('add!'); 
-			},
 			search: function () {
 				this.searchPopupVisible = true;
 			},
@@ -156,7 +153,11 @@
 				}
 
 				this.searchPopupVisible = false;
-			}
+			},
+			//进入活动详情
+			showActivityDetail: function (id) {
+				this.$router.push({ name: 'activitydetail', params: { id: id}});
+			},
 		},
 		data(){
 			return{
@@ -173,27 +174,27 @@
 	}
 </script>
 <style type="text/css" scoped>
-	.searchPopup{
+	.search-popup{
 		height: 100%;
 		width: 100%;
 	}
 
-	.searchPopup > div > div{
+	.search-popup > div > div{
 		margin-top: 50px;
 	}
 
-	.searchArea{
+	.search-area{
 		margin-top: 45px;
 		padding: 5px;
 	}
 
-	.searchArea div{
+	.search-area div{
 		display: inline-block;
 		margin-left: 5px;
 		font-size: 15px;
 	}
 
-	.searchArea span{
+	.search-area span{
 		border: 1px solid white;
    		color: white;
    		background-color: #999;

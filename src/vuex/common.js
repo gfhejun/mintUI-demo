@@ -1,16 +1,16 @@
 const common = {
 	state: {
 		user: {
-			id: '1-5B-4873',
-			loginId: 'lirong',
-			username: '李荣',
+			id: '1-5B-790',
+			loginId: 'chend',
+			username: '陈东',
 			password: 'a123456',
-			orgId: '1-59-1127',
-			orgName: '战略客户关系管理部',
-			deptId: '1-59-1127',
-			deptName: '战略客户关系管理部',
-			postId: '1-5A-4576',
-			postName: '战略客户关系管理部客户关系管理岗'
+			orgId: '1-59-1172',
+			orgName: '资产托管部',
+			deptId: '1-59-1172',
+			deptName: '资产托管部',
+			postId: '1-5A-700',
+			postName: '投行华南三部总监(D)'
 		},
 		home: {
 			selected: '主页'
