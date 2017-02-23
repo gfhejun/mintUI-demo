@@ -20,7 +20,10 @@
   				<mt-header fixed :title="pickTitle">
   					<mt-button slot="left" icon="back" @click="closePickPopup"></mt-button>
   				</mt-header>
-  				<div class="pick-content">
+  				<div class="pick-content" 
+  				v-infinite-scroll="loadMore"
+				infinite-scroll-disabled="disableLoadingMore"
+  				infinite-scroll-distance="10">
   					<div class="empty"></div>
   					<div class="spinner" v-if="loading">
 						<mt-spinner type="triple-bounce" color="#26a2ff" :size="30"></mt-spinner>
@@ -52,6 +55,13 @@
 			          		</div>
 			        	</mt-tab-container-item>
 			      	</mt-tab-container>
+			      	<div class="load-more" v-if="loadMoreShow()">
+						<div v-if="!loading && disableLoadingMore">我是有底线的</div>
+						<div v-if="!disableLoadingMore">
+							加载更多
+							<mt-spinner style="display:inline-block" type="triple-bounce" color="#26a2ff" :size="30"></mt-spinner>
+					</div>
+			</div>
   				</div>
   			</div>
 		</mt-popup>
@@ -224,8 +234,21 @@
 					this.overTime = this.pickTime;
 				}
 			},
+			loadMore: function () {
+				if (this.currentPickContentType == 'customer'){
+					this.customerPage++;
+					this.getCustomers();
+				}else if (this.currentPickContentType == 'opportunity'){
+					this.opportunityPage++;
+					this.getOpportunities();
+				}else if (this.currentPickContentType == 'contact'){
+					this.contactPage++;
+					this.getContacts();
+				}	 
+			},
 			getCustomers: function () {
 				this.loading = true;
+				this.disableLoadingMore = true;
 				var config = {
 					params:{
 						page: this.customerPage,
@@ -240,7 +263,17 @@
 					this.loading = false;
 
 					if (response.status == 200) {
-						this.customers = response.data.rows;
+						if (this.customerPage == 1){
+							this.customers = response.data.rows;
+						}else{
+							response.data.rows.forEach((item) => this.customers.push(item));
+						}
+						if (this.customers.length >= response.data.total) {
+							//已无更多数据时显示提示，并且禁止上拉加载更多
+							this.disableLoadingMore = true;
+						} else {
+							this.disableLoadingMore = false;
+						}
 					}
 
 					this.loading = false;
@@ -252,6 +285,7 @@
 			},
 			getOpportunities: function () {
 				this.loading = true;
+				this.disableLoadingMore = true;
 				var config = {
 					params:{
 						empId: this.user.id,
@@ -267,7 +301,17 @@
 					this.loading = false;
 
 					if (response.status == 200) {
-						this.opportunities = response.data.rows;
+						if (this.opportunityPage == 1){
+							this.opportunities = response.data.rows;
+						}else{
+							response.data.rows.forEach((item) => this.opportunities.push(item));
+						}
+						if (this.opportunities.length >= response.data.total) {
+							//已无更多数据时显示提示，并且禁止上拉加载更多
+							this.disableLoadingMore = true;
+						} else {
+							this.disableLoadingMore = false;
+						}
 					}
 
 					this.loading = false;
@@ -279,6 +323,7 @@
 			},
 			getContacts: function () {
 				this.loading = true;
+				this.disableLoadingMore = true;
 				var config = {
 					params:{
 						page: this.contactPage,
@@ -293,7 +338,17 @@
 					this.loading = false;
 
 					if (response.status == 200) {
-						this.contacts = response.data.rows;
+						if (this.contactPage == 1){
+							this.contacts = response.data.rows;
+						}else{
+							response.data.rows.forEach((item) => this.contacts.push(item));
+						}
+						if (this.contacts.length >= response.data.total) {
+							//已无更多数据时显示提示，并且禁止上拉加载更多
+							this.disableLoadingMore = true;
+						} else {
+							this.disableLoadingMore = false;
+						}
 					}
 
 					this.loading = false;
@@ -315,11 +370,22 @@
 					this.contact = item;
 				}
 				this.pickPopupVisible = false;
+			},
+			loadMoreShow: function () {
+				if ((this.currentPickContentType == 'customer' && this.customers.length < 1) 
+					||(this.currentPickContentType == 'opportunity' && this.opportunities.length < 1)
+					||(this.currentPickContentType == 'contact' && this.contacts.length < 1)
+					|| this.currentPickContentType == 'type'){
+					return false;
+				}else{
+					return true;
+				}
 			}
 		},
 		data(){
 			return{
-				loading: false,
+				loading: false, //正在加载
+				disableLoadingMore: true, //是否可以上拉加载更多
 				user: this.$store.getters.getUserInfo, //当前用户
 				url: config.config.url.activityDetail, //访问路径
 				customerUrl: config.config.url.activityCustomer, //获取客户路径
@@ -444,6 +510,12 @@
 		width: 100%;
 		text-align: center;
 		padding-top: 100px;
+	}
+
+	.load-more{
+		text-align: center;
+		padding: 10px 0;
+		border-bottom: 1px solid #ddd;
 	}
 
 </style>
