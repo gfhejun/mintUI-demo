@@ -1,10 +1,12 @@
 <template>
   <div>
-    <mt-header fixed :title="selected"></mt-header>
+    <mt-header fixed :title="selected">
+      <img class="chart" slot="right" src="../../assets/chart.png" @click="changeChartStatus">
+    </mt-header>
     <div class="container">
       <mt-tab-container v-model="selected">
         <mt-tab-container-item id="主页">
-          <main-page></main-page>
+          <main-page :show="showChart"></main-page>
         </mt-tab-container-item>
         <mt-tab-container-item id="消息">
           <message></message>
@@ -50,9 +52,15 @@ export default {
     Message,
     Setting
   },
+  methods:{
+    changeChartStatus: function () {
+       this.showChart = !this.showChart;
+    }
+  },
   data () {
     return {
-      selected: this.$store.getters.getCurrentHomePage
+      selected: this.$store.getters.getCurrentHomePage,
+      showChart: true
     }
   },
   watch: {
@@ -69,5 +77,11 @@ export default {
     top: 40px;
     bottom: 55px;
     width: 100%;
+  }
+
+  .chart{
+    height: 20px;
+    width: 20px;
+    color: white;
   }
 </style>
