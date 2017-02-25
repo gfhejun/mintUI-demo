@@ -1,9 +1,5 @@
 <template>
 	<div>
-		<div class="spinner" v-if="loading">
-			<mt-spinner type="triple-bounce" color="#26a2ff" :size="30">
-			</mt-spinner>
-		</div>
 		<transition name="fade">
 		    <div class="chart" id="chart" v-show="show">
 		    </div>
@@ -53,12 +49,11 @@
 
 				axios.get(this.url + "my", config)
 					.then((response) => {
-						this.loading = false;
 						if (response.status == 200) {
-							console.log(response);
 							this.chartOption.series[0].data = [response.data.account_count.active,response.data.served_account_count.active];
 							this.chartOption.series[1].data = [response.data.account_count.potential,response.data.served_account_count.potential];
 							this.chart.setOption(this.chartOption);
+							this.chart.hideLoading();
 						}
 
 					}, (response) => {
@@ -103,7 +98,6 @@
 				chart: null,
 				url: config.config.url.host + config.config.url.report,
 				user: this.$store.getters.getUserInfo, //当前用户
-				loading: false,
 				chartOption: {
 					legend: {
 						tooltip: {
@@ -156,6 +150,7 @@
 		mounted() {
 	        this.chart = echarts.init(document.getElementById('chart'));
 			this.chart.setOption(this.chartOption);
+			this.chart.showLoading();
 	    }
 	}
 </script>
@@ -199,13 +194,6 @@
 
   .mint-msgbox-message{
   	color: #333;
-  }
-
-  .spinner{
-	margin-top: 50px;
-	height: 100%;
-	width: 100%;
-	text-align: center;
   }
 
   .fade-enter-active, .fade-leave-active {
