@@ -4,8 +4,11 @@
 			<mt-spinner type="triple-bounce" color="#26a2ff" :size="30">
 			</mt-spinner>
 		</div>
-		<div class="chart" id="chart" v-show="show">
-		</div>
+		<transition name="fade">
+		    <div class="chart" id="chart" v-show="show">
+		    </div>
+		</transition>
+		
 		<div class="items">
 			<div v-for="items in uiItems">
 				<div class="grid-item" v-for="item in items" @click="goto(item.link)">
@@ -203,5 +206,12 @@
 	height: 100%;
 	width: 100%;
 	text-align: center;
-}
+  }
+
+  .fade-enter-active, .fade-leave-active {
+	transition: opacity .5s
+  }
+  .fade-enter, .fade-leave-active {
+	opacity: 0
+  }
 </style>
