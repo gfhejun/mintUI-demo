@@ -13,12 +13,51 @@ const common = {
 			postName: '投行华南三部总监(D)'
 		},
 		home: {
-			selected: '主页'
+			selected: '主页',
+			chartOption: {
+				credits: {
+					enabled: false
+				},
+				exporting: {
+					enabled: false
+				},
+				chart: {
+					type: 'column'
+				},
+				title: {
+					text: ''
+				},
+				xAxis: {
+					categories: ['客户数量', '本年已服务客户']
+				},
+				yAxis: {
+					title: {
+						text: ''
+					}
+				},
+				series: [{
+					name: '有效客户',
+					data: [0, 0],
+					dataLabels: {
+						enabled: true
+					}
+				}, {
+					name: '潜在客户',
+					data: [0, 0],
+					dataLabels: {
+						enabled: true
+					}
+				}]
+			}
 		}
 	},
 	mutations: {
 		changeHomeTab(state, tab) {
 			state.home.selected = tab;
+		},
+		updateHomeChartOption(state, series) {
+			state.home.chartOption.series[0].data = series[0];
+			state.home.chartOption.series[1].data = series[1];
 		}
 	},
 	actions: {},
@@ -28,6 +67,9 @@ const common = {
 		},
 		getCurrentHomePage: state => {
 			return state.home.selected;
+		},
+		getHomeChartOption: state => {
+			return state.home.chartOption;
 		}
 	}
 }

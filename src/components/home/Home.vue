@@ -1,7 +1,7 @@
 <template>
   <div>
     <mt-header fixed :title="selected">
-      <img class="chart" slot="right" src="../../assets/chart.png" @click="changeChartStatus">
+      <img class="chart" slot="right" src="../../assets/chart.png" @click="changeChartStatus" v-show="selected=='主页'">
     </mt-header>
     <div class="container">
       <mt-tab-container v-model="selected">

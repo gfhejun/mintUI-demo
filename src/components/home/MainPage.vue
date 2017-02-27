@@ -20,9 +20,10 @@
 <script type="text/javascript">
 	import Vue from 'vue'
 	import {MessageBox, Spinner} from 'mint-ui'
-	import echarts from 'echarts'
 	import axios from 'axios'
 	import config from '../../util/config'
+	import Highcharts from 'highcharts';
+	require('highcharts/modules/exporting')(Highcharts);
 
 	Vue.component(Spinner.name, Spinner);
 
@@ -50,10 +51,12 @@
 				axios.get(this.url + "my", config)
 					.then((response) => {
 						if (response.status == 200) {
-							this.chartOption.series[0].data = [response.data.account_count.active,response.data.served_account_count.active];
-							this.chartOption.series[1].data = [response.data.account_count.potential,response.data.served_account_count.potential];
-							this.chart.setOption(this.chartOption);
-							this.chart.hideLoading();
+							this.$store.commit('updateHomeChartOption', 
+								[[response.data.account_count.active,
+								response.data.served_account_count.active],
+								[response.data.account_count.potential,
+								response.data.served_account_count.potential]]);
+							Highcharts.chart('chart', this.$store.getters.getHomeChartOption);
 						}
 
 					}, (response) => {
@@ -97,60 +100,12 @@
 				uiItems:[],
 				chart: null,
 				url: config.config.url.host + config.config.url.report,
-				user: this.$store.getters.getUserInfo, //当前用户
-				chartOption: {
-					legend: {
-						tooltip: {
-				    		show: true
-				    	},
-				    	data:[
-				    		{
-				    			name: '有效客户',
-							    icon: 'circle',
-							    textStyle: {
-							        color: '#999'
-							    }
-				    		},{
-				    			name: '潜在客户',
-							    icon: 'circle',
-							    textStyle: {
-							        color: '#999'
-							    }
-				    		}
-				    	]
-					},
-				    xAxis: {
-				        data: ["客户数量","本年已服务客户"]
-				    },
-				    yAxis: {
-				    	splitLine: {show: false}
-				    },
-				    series: [{
-				        name: '有效客户',
-				        type: 'bar',
-				        data:[0 , 0],
-				        itemStyle: {
-				            normal: {
-				                color: '#26a2ff'
-				            }
-				        }
-				    },{
-				    	name: '潜在客户',
-				        type: 'bar',
-				        data: [0, 0],
-				        itemStyle: {
-				            normal: {
-				                color: '#999'
-				            }
-				        }
-				    }]
-				}
+				user: this.$store.getters.getUserInfo //当前用户
 			}
 		},
 		mounted() {
-	        this.chart = echarts.init(document.getElementById('chart'));
-			this.chart.setOption(this.chartOption);
-			this.chart.showLoading();
+			// 创建图表
+			Highcharts.chart('chart', this.$store.getters.getHomeChartOption)
 	    }
 	}
 </script>
