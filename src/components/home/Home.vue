@@ -6,7 +6,7 @@
     <div class="container">
       <mt-tab-container v-model="selected">
         <mt-tab-container-item id="主页">
-          <main-page :show="showChart"></main-page>
+          <main-page :show="showChart" :tab="selected"></main-page>
         </mt-tab-container-item>
         <mt-tab-container-item id="消息">
           <message></message>

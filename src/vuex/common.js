@@ -14,6 +14,8 @@ const common = {
 		},
 		home: {
 			selected: '主页',
+			chartInit: false,
+			chartSelected: 'my',
 			chartOption: {
 				credits: {
 					enabled: false
@@ -37,23 +39,33 @@ const common = {
 				},
 				series: [{
 					name: '有效客户',
-					data: [0, 0],
 					dataLabels: {
 						enabled: true
 					}
 				}, {
 					name: '潜在客户',
-					data: [0, 0],
 					dataLabels: {
 						enabled: true
 					}
-				}]
+				}],
+				loading: {
+					labelStyle: {
+						color: 'red',
+						fontSize: '12px'
+					}
+				},
 			}
 		}
 	},
 	mutations: {
 		changeHomeTab(state, tab) {
 			state.home.selected = tab;
+		},
+		changeChartTab(state, tab) {
+			state.home.chartSelected = tab;
+		},
+		updateInit(state) {
+			state.home.chartInit = true;
 		},
 		updateHomeChartOption(state, series) {
 			state.home.chartOption.series[0].data = series[0];
@@ -68,8 +80,14 @@ const common = {
 		getCurrentHomePage: state => {
 			return state.home.selected;
 		},
+		getCurrentChartTab: state => {
+			return state.home.chartSelected;
+		},
 		getHomeChartOption: state => {
 			return state.home.chartOption;
+		},
+		getChartInit: state => {
+			return state.home.chartInit;
 		}
 	}
 }

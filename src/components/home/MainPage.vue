@@ -2,6 +2,12 @@
 	<div>
 		<transition name="fade">
 		    <div class="chart" id="chart" v-show="show">
+		    	<mt-navbar v-model="selected">
+				  <mt-tab-item id="my">我的客户</mt-tab-item>
+				  <mt-tab-item id="team">我团队的客户</mt-tab-item>
+				  <mt-tab-item id="all">公司客户</mt-tab-item>
+				</mt-navbar>
+				<div id="chartArea"></div>
 		    </div>
 		</transition>
 		
@@ -19,16 +25,18 @@
 </template>
 <script type="text/javascript">
 	import Vue from 'vue'
-	import {MessageBox, Spinner} from 'mint-ui'
+	import {MessageBox, Spinner, Navbar, TabItem} from 'mint-ui'
 	import axios from 'axios'
 	import config from '../../util/config'
 	import Highcharts from 'highcharts';
 	require('highcharts/modules/exporting')(Highcharts);
 
 	Vue.component(Spinner.name, Spinner);
+	Vue.component(Navbar.name, Navbar);
+	Vue.component(TabItem.name, TabItem);
 
 	export default{
-		props:['show'],
+		props:['show', 'tab'],
 		components:{
 			
 		},
@@ -48,7 +56,7 @@
 					}
 				}
 
-				axios.get(this.url + "my", config)
+				axios.get(this.url + this.selected, config)
 					.then((response) => {
 						if (response.status == 200) {
 							this.$store.commit('updateHomeChartOption', 
@@ -56,7 +64,7 @@
 								response.data.served_account_count.active],
 								[response.data.account_count.potential,
 								response.data.served_account_count.potential]]);
-							Highcharts.chart('chart', this.$store.getters.getHomeChartOption);
+							this.chart = Highcharts.chart('chartArea', this.$store.getters.getHomeChartOption);
 						}
 
 					}, (response) => {
@@ -82,8 +90,6 @@
 					this.uiItems.push(temp);
 				}
 			}
-
-			this.initChart();
 		},
 		data(){
 			return{
@@ -100,19 +106,42 @@
 				uiItems:[],
 				chart: null,
 				url: config.config.url.host + config.config.url.report,
-				user: this.$store.getters.getUserInfo //当前用户
+				user: this.$store.getters.getUserInfo, //当前用户
+				selected: this.$store.getters.getCurrentChartTab
 			}
 		},
 		mounted() {
-			// 创建图表
-			Highcharts.chart('chart', this.$store.getters.getHomeChartOption)
-	    }
+			if (this.$store.getters.getCurrentHomePage == '主页'){
+				this.chart = Highcharts.chart('chartArea', this.$store.getters.getHomeChartOption);
+			}
+			if (!this.$store.getters.getChartInit){
+				this.chart.showLoading("数据加载中..");
+				this.$store.commit('updateInit');
+				this.initChart();
+			}
+	    },
+	    watch: {
+		    selected: function (newValue) {
+		        this.$store.commit('changeChartTab', newValue);
+		        this.chart.showLoading("数据刷新中..");
+		        this.initChart();
+		    },
+		    tab: function (newValue) {
+		    	if (newValue == '主页' && this.chart == null){
+		    		this.chart = Highcharts.chart('chartArea', this.$store.getters.getHomeChartOption);
+		    	}
+		    }
+		}
 	}
 </script>
 <style type="text/css" scoped>
   .chart{
   	padding: 10px 10px 0 10px;
 	height: 250px;
+  }
+
+  #chartArea{
+  	height: 200px;
   }
 
   .grid-item{
