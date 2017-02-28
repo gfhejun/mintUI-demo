@@ -98,10 +98,11 @@
 					{name:'客户管理',icon:'customer.png',link:'customerlist',show:true},
 					{name:'商机管理',icon:'opportunity.png',link:'opportunitylist',show:true},
 					{name:'活动管理',icon:'activity.png',link:'activitylist',show:true},
-					{name:'工时管理',icon:'worktime.png',link:'',show:false},
-					{name:'日程管理',icon:'schedule.png',link:'',show:false},
-					{name:'交叉销售',icon:'salesopportunity.png',link:'',show:false},
-					{name:'业务与产品',icon:'product.png',link:'',show:false}
+					{name:'名片识别',icon:'business_card.png',link:'',show: true},
+					{name:'工时管理',icon:'worktime.png',link:'',show:true},
+					{name:'日程管理',icon:'schedule.png',link:'',show:true},
+					{name:'交叉销售',icon:'salesopportunity.png',link:'',show:true},
+					{name:'业务与产品',icon:'product.png',link:'',show:true}
 				],
 				uiItems:[],
 				chart: null,
